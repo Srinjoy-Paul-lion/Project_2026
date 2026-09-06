@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management System | ES6 Assignment 4</title>
+  
+  <!-- External Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================================================
+       1. GLOBAL RESETS & VIEWPORT CONFIGURATION
+       ========================================================================== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100vh;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+
+    body {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ==========================================================================
+       2. CONTAINER & LAYOUT STRUCTURE
+       ========================================================================== */
+    .app-container {
+      max-width: 1200px;
+      width: 100%;
+      height: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       3. HEADER BAR
+       ========================================================================== */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #1e293b;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      flex-shrink: 0;
+    }
+
+    header h1 {
+      font-size: 1.25rem;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-status {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+    }
+
+    .status-badge {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    /* ==========================================================================
+       4. STATISTICS GRID (reduce() DISPLAY)
+       ========================================================================== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .stat-card {
+      background-color: #1e293b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .stat-card p {
+      font-size: 0.7rem;
+      color: #94a3b8;
+      text-transform: uppercase;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .stat-card h3 {
+      font-size: 1.2rem;
+      color: #f8fafc;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       5. TOOLBAR (SEARCH & FILTERS)
+       ========================================================================== */
+    .toolbar {
+      background-color: #1e293b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .search-box {
+      display: flex;
+      gap: 6px;
+      flex-grow: 1;
+      max-width: 400px;
+    }
+
+    input[type="text"] {
+      flex-grow: 1;
+      padding: 7px 12px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background-color: #0f172a;
+      color: #ffffff;
+      outline: none;
+      font-size: 0.82rem;
+    }
+
+    input[type="text"]:focus {
+      border-color: #38bdf8;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    button {
+      padding: 7px 14px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background-color: #0284c7;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: #0369a1;
+    }
+
+    .btn-secondary {
+      background-color: #334155;
+      color: #f8fafc;
+    }
+
+    .btn-secondary:hover {
+      background-color: #475569;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-btn {
+      background-color: #0f172a;
+      border: 1px solid #475569;
+      color: #94a3b8;
+    }
+
+    .filter-btn:hover {
+      color: #f8fafc;
+      background-color: #1e293b;
+    }
+
+    .filter-btn.active {
+      background-color: #38bdf8;
+      color: #0f172a;
+      font-weight: 700;
+      border-color: #38bdf8;
+    }
+
+    /* ==========================================================================
+       6. REAL-TIME TICKER & NOTIFICATIONS
+       ========================================================================== */
+    .status-ticker {
+      background-color: #1e293b;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border-left: 4px solid #38bdf8;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+      color: #38bdf8;
+      flex-shrink: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* ==========================================================================
+       7. DATA TABLE & BADGES (map() DISPLAY)
+       ========================================================================== */
+    .table-container {
+      flex: 1;
+      min-height: 0;
+      background-color: #1e293b;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      overflow-y: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th, td {
+      padding: 8px 14px;
+      border-bottom: 1px solid #334155;
+      font-size: 0.82rem;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      background-color: #0f172a;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      z-index: 10;
+    }
+
+    tbody tr:hover {
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    tr.row-highlight {
+      background-color: rgba(56, 189, 248, 0.15) !important;
+      border-left: 3px solid #38bdf8;
+    }
+
+    .badge {
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .badge-pass {
+      background-color: rgba(74, 222, 128, 0.2);
+      color: #4ade80;
+    }
+
+    .badge-fail {
+      background-color: rgba(248, 113, 113, 0.2);
+      color: #f87171;
+    }
+
+    .grade-badge {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+      text-align: center;
+      border-radius: 50%;
+      background-color: #334155;
+      font-weight: 700;
+      font-size: 0.78rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- App Container (Single Page Viewport) -->
+  <div class="app-container">
+
+    <!-- 1. HEADER SECTION -->
+    <header>
+      <h1>🎓 Student Management System</h1>
+      <div class="header-status">
+        <span class="status-badge">🔒 PERMANENT RECORDS</span>
+        <span id="liveClock" style="color: #38bdf8;">--:--:--</span>
+      </div>
+    </header>
+
+    <!-- 2. STATISTICS DASHBOARD (reduce()) -->
+    <section class="stats-grid">
+      <div class="stat-card">
+        <p>Total Students</p>
+        <h3 id="statTotalStudents">0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Total Marks</p>
+        <h3 id="statTotalMarks">0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Average Marks</p>
+        <h3 id="statAvgMarks">0.0</h3>
+      </div>
+      <div class="stat-card">
+        <p>Highest Scorer</p>
+        <h3 id="statHighestScorer">N/A</h3>
+      </div>
+    </section>
+
+    <!-- 3. SEARCH & FILTER TOOLBAR (find() & filter()) -->
+    <section class="toolbar">
+      <div class="search-box">
+        <input type="text" id="searchIdInput" placeholder="Search Student ID (e.g. STU101)..." />
+        <button id="btnSearch" class="btn-primary">Search ID</button>
+        <button id="btnClearSearch" class="btn-secondary">Clear</button>
+      </div>
+
+      <div class="filters">
+        <button id="btnResetData" class="btn-secondary" title="Restore Default Permanent Marks">🔄 Reset Marks</button>
+        <button id="btnFilterAll" class="filter-btn active">All Students</button>
+        <button id="btnFilterPassed" class="filter-btn">Passed (≥ 40)</button>
+        <button id="btnFilterTop" class="filter-btn">Marks ≥ 80</button>
+      </div>
+    </section>
+
+    <!-- 4. STATUS TICKER BAR -->
+    <div id="statusTicker" class="status-ticker">
+      <span id="tickerMsg">System ready. Permanent student records loaded.</span>
+      <span id="tickerTime" style="color: #94a3b8; font-size: 0.72rem;">READY</span>
+    </div>
+
+    <!-- 5. STUDENT DATA TABLE (map() & Template Literals) -->
+    <main class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Student ID</th>
+            <th>Name</th>
+            <th>Department</th>
+            <th>Age</th>
+            <th>Marks</th>
+            <th>Grade</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="studentTableBody">
+          <!-- Dynamically populated via map() -->
+        </tbody>
+      </table>
+    </main>
+
+  </div>
+
+  <!-- ==========================================================================
+       JAVASCRIPT ES6 LOGIC - MANDATORY ASSIGNMENT REQUIREMENTS
+       ========================================================================== -->
+  <script>
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 2: var, let, const Variable Declarations                      */
+    /* -------------------------------------------------------------------------- */
+    var APPLICATION_NAME = "Student Management System";
+    const PASS_MARK_THRESHOLD = 40;
+    const LOCAL_STORAGE_KEY = "ES6_STUDENT_PERMANENT_DATA";
+    
+    let currentFilterMode = 'ALL'; // Modes: 'ALL', 'PASSED', 'TOP'
+    let activeSearchResultId = null;
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 1: ES6 Class & Constructor                                    */
+    /* -------------------------------------------------------------------------- */
+    class Student {
+      constructor(id, name, department, marks, age) {
+        this.id = id;
+        this.name = name;
+        this.department = department;
+        this.marks = Number(marks);
+        this.age = Number(age);
+      }
+    }
+
+    // Default 6 permanent student records instantiated using 'new'
+    const defaultStudentsList = [
+      new Student("STU101", "Alex Morgan", "Computer Science", 88, 20),
+      new Student("STU102", "Sophia Chen", "Information Technology", 94, 21),
+      new Student("STU103", "Marcus Vance", "Electronics & Comm", 35, 19),
+      new Student("STU104", "Priya Sharma", "Computer Science", 78, 22),
+      new Student("STU105", "David Miller", "Mechanical Eng", 42, 20),
+      new Student("STU106", "Elena Rostova", "Biotechnology", 91, 21)
+    ];
+
+    /* -------------------------------------------------------------------------- */
+    /* LOCALSTORAGE DATA PERSISTENCE LAYER                                        */
+    /* -------------------------------------------------------------------------- */
+    const saveToLocalStorage = () => {
+      try {
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(studentsCollection));
+      } catch (error) {
+        console.warn("LocalStorage save error:", error);
+      }
+    };
+
+    const loadFromLocalStorage = () => {
+      try {
+        const storedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+        if (storedData) {
+          const parsedList = JSON.parse(storedData);
+          if (Array.isArray(parsedList) && parsedList.length > 0) {
+            return parsedList.map(s => new Student(s.id, s.name, s.department, s.marks, s.age));
+          }
+        }
+      } catch (error) {
+        console.warn("LocalStorage load error:", error);
+      }
+      return defaultStudentsList.map(s => new Student(s.id, s.name, s.department, s.marks, s.age));
+    };
+
+    // Active state collection
+    let studentsCollection = loadFromLocalStorage();
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 3: Arrow Functions (Grade & Pass/Fail Calculations)            */
+    /* -------------------------------------------------------------------------- */
+    const calculateGrade = (marks) => {
+      if (marks >= 90) return 'A+';
+      if (marks >= 80) return 'A';
+      if (marks >= 70) return 'B';
+      if (marks >= 40) return 'C';
+      return 'F';
+    };
+
+    const isPassed = (marks) => marks >= PASS_MARK_THRESHOLD;
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 5: filter() Array Method                                       */
+    /* -------------------------------------------------------------------------- */
+    // Filter passed students (marks >= 40)
+    const getPassedStudents = (list) => list.filter(student => isPassed(student.marks));
+
+    // Filter top scoring students (marks >= 80)
+    const getTopScorers = (list) => list.filter(student => student.marks >= 80);
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 6: find() Array Method                                         */
+    /* -------------------------------------------------------------------------- */
+    const findStudentById = (searchId) => {
+      if (!searchId) return null;
+      const cleanId = searchId.trim().toLowerCase();
+      return studentsCollection.find(student => student.id.toLowerCase() === cleanId);
+    };
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 7: reduce() Array Aggregation Statistics                       */
+    /* -------------------------------------------------------------------------- */
+    const updateDashboardStatistics = (list) => {
+      // 1. Total Marks via reduce()
+      const totalAggregateMarks = list.reduce((accumulator, student) => accumulator + student.marks, 0);
+
+      // 2. Average Marks
+      const classAverageMarks = list.length ? (totalAggregateMarks / list.length).toFixed(1) : 0;
+
+      // 3. Highest Scorer Object via reduce()
+      const highestScoringStudent = list.reduce((highest, student) => {
+        if (!highest || student.marks > highest.marks) return student;
+        return highest;
+      }, null);
+
+      // Update DOM
+      document.getElementById('statTotalStudents').textContent = list.length;
+      document.getElementById('statTotalMarks').textContent = totalAggregateMarks;
+      document.getElementById('statAvgMarks').textContent = classAverageMarks;
+      document.getElementById('statHighestScorer').textContent = highestScoringStudent 
+        ? `${highestScoringStudent.name} (${highestScoringStudent.marks})` 
+        : 'N/A';
+    };
+
+    /* -------------------------------------------------------------------------- */
+    /* UI TICKER HELPER                                                           */
+    /* -------------------------------------------------------------------------- */
+    const logStatusMessage = (message) => {
+      const currentTime = new Date().toLocaleTimeString();
+      document.getElementById('tickerMsg').innerHTML = message;
+      document.getElementById('tickerTime').textContent = currentTime;
+    };
+
+    /* -------------------------------------------------------------------------- */
+    /* REQUIREMENT 4 & 8: map(), Template Literals & DOM Manipulation             */
+    /* -------------------------------------------------------------------------- */
+    const renderStudentTable = () => {
+      let filteredList = [...studentsCollection];
+
+      // Apply Filter Tabs
+      if (currentFilterMode === 'PASSED') {
+        filteredList = getPassedStudents(studentsCollection);
+      } else if (currentFilterMode === 'TOP') {
+        filteredList = getTopScorers(studentsCollection);
+      }
+
+      // Apply Active Search Query
+      if (activeSearchResultId) {
+        filteredList = filteredList.filter(s => s.id.toLowerCase() === activeSearchResultId.toLowerCase());
+      }
+
+      // REQUIREMENT 4: Dynamic rendering via map() and REQUIREMENT 8: Template Literals
+      const tableRowsHtml = filteredList.map(student => {
+        const studentGrade = calculateGrade(student.marks);
+        const passStatus = isPassed(student.marks);
+        const isSearchResult = activeSearchResultId && student.id.toLowerCase() === activeSearchResultId.toLowerCase();
+
+        return `
+          <tr class="${isSearchResult ? 'row-highlight' : ''}">
+            <td><strong>${student.id}</strong></td>
+            <td>${student.name}</td>
+            <td>${student.department}</td>
+            <td>${student.age} yrs</td>
+            <td><strong>${student.marks}</strong> / 100</td>
+            <td><span class="grade-badge">${studentGrade}</span></td>
+            <td>
+              <span class="badge ${passStatus ? 'badge-pass' : 'badge-fail'}">
+                ${passStatus ? 'PASS' : 'FAIL'}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Update DOM
+      const tbody = document.getElementById('studentTableBody');
+      tbody.innerHTML = tableRowsHtml || '<tr><td colspan="7" style="text-align:center; padding: 20px;">No student records found matching criteria.</td></tr>';
+
+      // Update Real-Time Statistics via reduce()
+      updateDashboardStatistics(studentsCollection);
+      saveToLocalStorage();
+    };
+
+    /* -------------------------------------------------------------------------- */
+    /* EVENT HANDLERS & INTERACTIVITY                                             */
+    /* -------------------------------------------------------------------------- */
+    const searchInput = document.getElementById('searchIdInput');
+
+    // Real-Time Instant Search (as you type)
+    searchInput.addEventListener('input', (event) => {
+      const query = event.target.value.trim();
+      if (query) {
+        const match = findStudentById(query); // find()
+        if (match) {
+          activeSearchResultId = match.id;
+          logStatusMessage(`🔍 Found Student: <strong>${match.name}</strong> (${match.id}) - Marks: ${match.marks}`);
+        } else {
+          activeSearchResultId = null;
+          logStatusMessage(`❌ No student found matching ID: "${query}"`);
+        }
+      } else {
+        activeSearchResultId = null;
+        logStatusMessage("Search cleared.");
+      }
+      renderStudentTable();
+    });
+
+    // Search Button Click
+    document.getElementById('btnSearch').addEventListener('click', () => {
+      const query = searchInput.value.trim();
+      if (!query) return;
+      const match = findStudentById(query);
+      if (match) activeSearchResultId = match.id;
+      renderStudentTable();
+    });
+
+    // Clear Search Button
+    document.getElementById('btnClearSearch').addEventListener('click', () => {
+      searchInput.value = '';
+      activeSearchResultId = null;
+      logStatusMessage("Search cleared.");
+      renderStudentTable();
+    });
+
+    // Reset Permanent Dataset Button
+    document.getElementById('btnResetData').addEventListener('click', () => {
+      studentsCollection = defaultStudentsList.map(s => new Student(s.id, s.name, s.department, s.marks, s.age));
+      activeSearchResultId = null;
+      currentFilterMode = 'ALL';
+      setFilterMode('ALL', 'btnFilterAll');
+      logStatusMessage("🔄 Permanent student records restored.");
+      renderStudentTable();
+    });
+
+    // Filter Buttons Helper
+    const setFilterMode = (mode, buttonId) => {
+      currentFilterMode = mode;
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(buttonId).classList.add('active');
+      renderStudentTable();
+    };
+
+    document.getElementById('btnFilterAll').addEventListener('click', () => setFilterMode('ALL', 'btnFilterAll'));
+    document.getElementById('btnFilterPassed').addEventListener('click', () => setFilterMode('PASSED', 'btnFilterPassed'));
+    document.getElementById('btnFilterTop').addEventListener('click', () => setFilterMode('TOP', 'btnFilterTop'));
+
+    // Real-Time Header Clock
+    setInterval(() => {
+      document.getElementById('liveClock').textContent = new Date().toLocaleTimeString();
+    }, 1000);
+
+    /* -------------------------------------------------------------------------- */
+    /* APPLICATION INITIALIZATION                                                 */
+    /* -------------------------------------------------------------------------- */
+    document.addEventListener('DOMContentLoaded', () => {
+      renderStudentTable();
+    });
+  </script>
+</body>
+</html>

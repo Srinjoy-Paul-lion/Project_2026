@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolkata Smart City Portal | KMC Digital Governance</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" />
+    <style>
+        :root {
+            --primary: #2563eb; --primary-dark: #1d4ed8; --primary-light: rgba(37, 99, 235, 0.1);
+            --kolkata-blue: #0056b3; --bg-body: #f8fafc; --bg-card: #ffffff; --bg-alt: #f1f5f9;
+            --text-dark: #0f172a; --text-muted: #64748b; --border: #e2e8f0; --danger: #ef4444;
+            --warning: #f59e0b; --success: #10b981; --radius: 12px; --shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); line-height: 1.6; }
+        a { text-decoration: none; color: inherit; }
+        ul { list-style: none; }
+        .container { width: 90%; max-width: 1200px; margin: 0 auto; }
+        .section { padding: 4rem 0; }
+        .bg-alt { background-color: var(--bg-alt); }
+        .bg-dark { background-color: #0f172a; color: #fff; }
+        .section-header { text-align: center; margin-bottom: 2.5rem; }
+        .section-header h2 { font-family: 'Outfit', sans-serif; font-size: 2.2rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; color: var(--text-dark); }
+        .bg-dark .section-header h2 { color: #fff; }
+        .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1.5rem; font-weight: 600; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-primary:hover { background: var(--primary-dark); }
+        .btn-outline { background: transparent; border: 1px solid var(--border); color: var(--text-dark); }
+        .btn-outline:hover { border-color: var(--primary); color: var(--primary); }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warning { background: var(--warning); color: #0f172a; }
+        .btn-block { width: 100%; }
+        
+        /* Navbar & Top Bar */
+        .live-bar-wrapper { background: #0b1329; color: #94a3b8; padding: 0.5rem 0; font-size: 0.8rem; border-bottom: 1px solid #1e293b; }
+        .live-bar-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+        .live-data-pill { display: inline-flex; align-items: center; gap: 0.4rem; color: #e2e8f0; }
+        .navbar { position: sticky; top: 0; z-index: 1000; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border); }
+        .nav-container { display: flex; align-items: center; justify-content: space-between; height: 70px; }
+        .nav-logo { font-family: 'Outfit', sans-serif; font-size: 1.4rem; font-weight: 800; color: var(--primary); display: flex; align-items: center; gap: 0.5rem; }
+        .nav-logo span.city-tag { font-size: 0.75rem; background: #e0f2fe; color: var(--kolkata-blue); border: 1px solid var(--kolkata-blue); padding: 2px 6px; border-radius: 4px; font-weight: 700; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { font-size: 0.9rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 0.4rem; transition: 0.2s; }
+        .nav-links a:hover { color: var(--primary); }
+        .nav-alert-wrapper { position: relative; }
+        .alert-icon-btn { background: #fee2e2; color: var(--danger); border: none; width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; position: relative; }
+        .alert-badge-num { position: absolute; top: -2px; right: -2px; background: var(--danger); color: #fff; font-size: 0.7rem; font-weight: 800; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid #fff; }
+        .alert-dropdown { position: absolute; top: 50px; right: 0; width: 330px; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: 0 10px 25px rgba(0,0,0,0.15); display: none; flex-direction: column; overflow: hidden; z-index: 1001; }
+        .alert-dropdown.active { display: flex; }
+        .alert-dropdown-header { background: #fef2f2; padding: 0.75rem 1rem; font-weight: 700; color: var(--danger); border-bottom: 1px solid #fecaca; display: flex; align-items: center; justify-content: space-between; font-size: 0.9rem; }
+        .alert-dropdown-body { padding: 0.5rem 0; }
+        .alert-item { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); display: flex; gap: 0.75rem; align-items: flex-start; }
+        .alert-item:last-child { border-bottom: none; }
+        .alert-item i { color: var(--danger); margin-top: 0.2rem; }
+        .alert-item h4 { font-size: 0.85rem; margin-bottom: 0.2rem; }
+        .alert-item p { font-size: 0.78rem; color: var(--text-muted); }
+
+        /* Hero & Glance Cards */
+        .hero-section { background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color: #fff; padding: 4.5rem 0; text-align: center; }
+        .hero-content { max-width: 780px; margin: 0 auto; }
+        .hero-title { font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 1rem; }
+        .hero-para { font-size: 1.15rem; color: #cbd5e1; margin-bottom: 2rem; }
+        .glance-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 1.5rem; }
+        .glance-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); text-align: center; border-top: 4px solid var(--primary); transition: 0.2s; }
+        .glance-box:hover { transform: translateY(-4px); }
+        .glance-box.emergency { border-top-color: var(--danger); }
+        .glance-box.fire { border-top-color: var(--warning); }
+        .glance-box.hospital { border-top-color: var(--success); }
+        .glance-box.police { border-top-color: var(--primary); }
+        .glance-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
+        .glance-box.emergency .glance-icon { color: var(--danger); }
+        .glance-box.fire .glance-icon { color: var(--warning); }
+        .glance-box.hospital .glance-icon { color: var(--success); }
+        .glance-box.police .glance-icon { color: var(--primary); }
+        .glance-box h3 { font-size: 1.1rem; margin-bottom: 0.4rem; }
+        .glance-num { font-size: 1.35rem; font-weight: 800; color: var(--text-dark); margin-top: 0.5rem; display: block; }
+
+        /* Public Services & Map */
+        .public-services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .service-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; display: flex; align-items: flex-start; gap: 1rem; box-shadow: var(--shadow); }
+        .service-card-icon { width: 50px; height: 50px; background: var(--primary-light); color: var(--primary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+        .service-card h3 { font-size: 1.05rem; margin-bottom: 0.3rem; }
+        .service-card p { font-size: 0.85rem; color: var(--text-muted); }
+        #leafletMap { height: 420px; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+
+        /* Emergency Grid & Wizard */
+        .emergency-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+        .emergency-card { background: #1e293b; border: 1px solid #334155; border-radius: var(--radius); padding: 1.5rem; text-align: center; }
+        .emergency-card i { font-size: 2.2rem; margin-bottom: 0.75rem; }
+        .emergency-card h3 { font-size: 1.05rem; color: #fff; margin-bottom: 0.5rem; }
+        .emergency-number { font-size: 2rem; font-weight: 800; color: var(--warning); margin-bottom: 1rem; }
+        .form-wizard-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; max-width: 750px; margin: 0 auto; box-shadow: var(--shadow); }
+        .wizard-steps-bar { display: flex; justify-content: space-between; margin-bottom: 2rem; border-bottom: 2px solid var(--border); padding-bottom: 1rem; }
+        .step-tab { font-weight: 700; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
+        .step-tab.active { color: var(--primary); }
+        .form-pane { display: none; }
+        .form-pane.active { display: block; }
+        .form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; margin-bottom: 1.5rem; }
+        .span-full { grid-column: span 2; }
+        .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+        .form-group label { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+        .form-control { width: 100%; padding: 0.7rem 0.9rem; border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 0.9rem; outline: none; }
+        .form-control:focus { border-color: var(--primary); }
+        .upload-box { border: 2px dashed var(--border); padding: 1.5rem; text-align: center; border-radius: 6px; cursor: pointer; background: var(--bg-alt); }
+
+        /* Request Cards & Notifications */
+        .request-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .request-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; box-shadow: var(--shadow); }
+        .request-card-header { display: flex; justify-content: space-between; margin-bottom: 1rem; font-weight: 800; color: var(--text-dark); }
+        .request-card h3 { font-size: 1.1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.5rem; }
+        .request-location { font-size: 0.85rem; color: var(--text-muted); }
+        .notif-wrapper { max-width: 750px; margin: 0 auto; }
+        .notif-select { width: 100%; padding: 0.8rem 1rem; border-radius: 8px; border: 1px solid var(--border); font-size: 0.95rem; font-weight: 600; margin-bottom: 1.5rem; background: var(--bg-card); }
+        .notif-list-feed { display: flex; flex-direction: column; gap: 1rem; }
+        .notif-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem; }
+        .notif-item h4 { font-size: 1.05rem; margin-bottom: 0.3rem; display: flex; align-items: center; gap: 0.5rem; }
+        .notif-item p { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Facility Table & Footer & Modal */
+        .table-responsive { overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+        .facility-table { width: 100%; border-collapse: collapse; text-align: left; }
+        .facility-table th { background: var(--bg-alt); padding: 1rem 1.25rem; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); }
+        .facility-table td { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .status-pill { display: inline-flex; align-items: center; padding: 0.25rem 0.6rem; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .status-active { background: #d1fae5; color: #047857; }
+        .status-busy { background: #fef3c7; color: #b45309; }
+        .footer { background: #0f172a; color: #94a3b8; padding: 3rem 0 1.5rem 0; }
+        .footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
+        .footer-col h4 { color: #fff; font-size: 1rem; margin-bottom: 1rem; }
+        .footer-links a { color: #94a3b8; font-size: 0.88rem; display: flex; align-items: center; gap: 0.4rem; margin-bottom: 0.5rem; }
+        .footer-links a:hover { color: #fff; }
+        .footer-contact li { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.88rem; margin-bottom: 0.75rem; }
+        .footer-copyright { text-align: center; border-top: 1px solid #1e293b; padding-top: 1.5rem; font-size: 0.85rem; }
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); display: none; align-items: center; justify-content: center; z-index: 2000; }
+        .modal-overlay.active { display: flex; }
+        .modal-card { background: #fff; border-radius: var(--radius); padding: 2rem; width: 90%; max-width: 420px; text-align: center; }
+        .modal-card i.success-icon { font-size: 3rem; color: var(--success); margin-bottom: 0.75rem; }
+    </style>
+</head>
+<body>
+
+    <!-- REAL-TIME LIVE DATA TOP BAR -->
+    <div class="live-bar-wrapper">
+        <div class="container live-bar-container">
+            <span class="live-data-pill"><i class="fa-solid fa-clock"></i> Live Time: <strong id="liveClock">--:--:--</strong> IST</span>
+            <span class="live-data-pill"><i class="fa-solid fa-cloud-sun"></i> Kolkata Weather: <strong id="liveWeather">Loading...</strong></span>
+            <span class="live-data-pill"><i class="fa-solid fa-wind"></i> Kolkata AQI: <strong id="liveAQI">Fetching...</strong></span>
+            <span class="live-data-pill"><i class="fa-solid fa-circle-dot" style="color: var(--success)"></i> KMC Network Status: <strong>Online 24/7</strong></span>
+        </div>
+    </div>
+
+    <!-- NAVIGATION BAR -->
+    <header class="navbar">
+        <div class="container nav-container">
+            <a href="#home" class="nav-logo">
+                <i class="fa-solid fa-city"></i> SMART CITY <span class="city-tag">KOLKATA</span>
+            </a>
+            <nav class="nav-links">
+                <a href="#home"><i class="fa-solid fa-house"></i> HOME</a>
+                <a href="#city-map"><i class="fa-solid fa-map-location-dot"></i> CITY MAP</a>
+                <a href="#services"><i class="fa-solid fa-gears"></i> SERVICE</a>
+                <a href="#report-issue"><i class="fa-solid fa-triangle-exclamation"></i> REPORT ISSUE</a>
+                <a href="#facilities"><i class="fa-solid fa-building-columns"></i> FACILITIES</a>
+                <a href="#contact"><i class="fa-solid fa-address-book"></i> CONTACT</a>
+            </nav>
+            <div class="nav-alert-wrapper">
+                <button class="alert-icon-btn" id="alertBtn" title="City Alerts">
+                    <i class="fa-solid fa-bell"></i>
+                    <span class="alert-badge-num">2</span>
+                </button>
+                <div class="alert-dropdown" id="alertDropdown">
+                    <div class="alert-dropdown-header">
+                        <span><i class="fa-solid fa-triangle-exclamation"></i> KOLKATA ALERTS</span>
+                        <span>LIVE</span>
+                    </div>
+                    <div class="alert-dropdown-body">
+                        <div class="alert-item">
+                            <i class="fa-solid fa-bolt"></i>
+                            <div>
+                                <h4>CESC Power Grid Repair</h4>
+                                <p>Maintenance in Salt Lake Sector V (11 PM - 3 AM).</p>
+                            </div>
+                        </div>
+                        <div class="alert-item">
+                            <i class="fa-solid fa-cloud-showers-heavy"></i>
+                            <div>
+                                <h4>Monsoon Heavy Rain</h4>
+                                <p>Water accumulation near Park Street Flyover.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero-section" id="home">
+        <div class="container hero-content">
+            <h1 class="hero-title">WELCOME TO SMART CITY</h1>
+            <p class="hero-para">Empowering the citizens of Kolkata (The City of Joy) with digital Kolkata Municipal Corporation (KMC) services, real-time grievance redressal, emergency contacts, Kolkata Metro transit info, and transparent urban infrastructure management.</p>
+            <a href="#services" class="btn btn-primary"><i class="fa-solid fa-compass"></i> EXPLORE SERVICE</a>
+        </div>
+    </section>
+
+    <!-- CITY AT A GLANCE -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-eye"></i> CITY AT A GLANCE</h2>
+            </div>
+            <div class="glance-grid">
+                <div class="glance-box emergency">
+                    <div class="glance-icon"><i class="fa-solid fa-kit-medical"></i></div>
+                    <h3>EMERGENCY</h3>
+                    <p>Kolkata Control Room</p>
+                    <span class="glance-num"><i class="fa-solid fa-phone"></i> 112 / 100</span>
+                </div>
+                <div class="glance-box fire">
+                    <div class="glance-icon"><i class="fa-solid fa-fire-extinguisher"></i></div>
+                    <h3>FIRE SERVICE</h3>
+                    <p>WB Fire & Emergency Services</p>
+                    <span class="glance-num"><i class="fa-solid fa-phone"></i> 101</span>
+                </div>
+                <div class="glance-box hospital">
+                    <div class="glance-icon"><i class="fa-solid fa-hospital"></i></div>
+                    <h3>HOSPITAL</h3>
+                    <p>SSKM Hospital & Medical Wards</p>
+                    <span class="glance-num"><i class="fa-solid fa-phone"></i> 102 / 108</span>
+                </div>
+                <div class="glance-box police">
+                    <div class="glance-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                    <h3>POLICE STATION</h3>
+                    <p>Kolkata Police Lalbazar HQ</p>
+                    <span class="glance-num"><i class="fa-solid fa-phone"></i> 100</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PUBLIC SERVICES -->
+    <section class="section bg-alt" id="services">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-hand-holding-hand"></i> PUBLIC SERVICE</h2>
+            </div>
+            <div class="public-services-grid">
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-fire-burner"></i></div>
+                    <div>
+                        <h3>FIRE SERVICE</h3>
+                        <p>24/7 Emergency fire fighting, hazard control, and building rescue operations across Kolkata.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-user-nurse"></i></div>
+                    <div>
+                        <h3>HOSPITAL</h3>
+                        <p>Advanced medical care, SSKM trauma wards, and Kolkata municipal health clinics.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-handcuffs"></i></div>
+                    <div>
+                        <h3>POLICE STATION</h3>
+                        <p>Lalbazar law enforcement, neighborhood watch patrol, and 100/112 Kolkata police helpline.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-droplet"></i></div>
+                    <div>
+                        <h3>BLOOD BANK</h3>
+                        <p>Real-time Kolkata central blood bank inventory and emergency donor dispatch network.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-restroom"></i></div>
+                    <div>
+                        <h3>PUBLIC TOILET</h3>
+                        <p>Nirmal Bangla smart eco-sanitation pods with touchless hygiene monitoring.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-recycle"></i></div>
+                    <div>
+                        <h3>RECYCLING</h3>
+                        <p>KMC automated waste segregation kiosks, plastic collection, and e-waste hubs.</p>
+                    </div>
+                </div>
+                <div class="service-card">
+                    <div class="service-card-icon"><i class="fa-solid fa-square-parking"></i></div>
+                    <div>
+                        <h3>PARKING</h3>
+                        <p>Kolkata smart parking slot finder with mobile space reservation and automated billing.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CITY MAP -->
+    <section class="section" id="city-map">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-map-location-dot"></i> CITY MAP</h2>
+            </div>
+            <div id="leafletMap"></div>
+        </div>
+    </section>
+
+    <!-- EMERGENCY CONTACTS -->
+    <section class="section bg-dark" id="emergency">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-phone-volume"></i> EMERGENCY CONTACT</h2>
+            </div>
+            <div class="emergency-grid">
+                <div class="emergency-card">
+                    <i class="fa-solid fa-shield-cat"></i>
+                    <h3>POLICE</h3>
+                    <div class="emergency-number">100 / 112</div>
+                    <a href="tel:100" class="btn btn-primary btn-block"><i class="fa-solid fa-phone"></i> CALL POLICE</a>
+                </div>
+                <div class="emergency-card">
+                    <i class="fa-solid fa-truck-medical"></i>
+                    <h3>AMBULANCE</h3>
+                    <div class="emergency-number">108 / 102</div>
+                    <a href="tel:108" class="btn btn-danger btn-block"><i class="fa-solid fa-phone"></i> CALL AMBULANCE</a>
+                </div>
+                <div class="emergency-card">
+                    <i class="fa-solid fa-fire"></i>
+                    <h3>FIRE</h3>
+                    <div class="emergency-number">101</div>
+                    <a href="tel:101" class="btn btn-warning btn-block"><i class="fa-solid fa-phone"></i> CALL FIRE</a>
+                </div>
+                <div class="emergency-card">
+                    <i class="fa-solid fa-house-tsunami"></i>
+                    <h3>DISASTER MANAGEMENT</h3>
+                    <div class="emergency-number">1070</div>
+                    <a href="tel:1070" class="btn btn-outline btn-block" style="color:#fff;border-color:#fff"><i class="fa-solid fa-phone"></i> CALL DISASTER CELL</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REPORT AN ISSUE -->
+    <section class="section" id="report-issue">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-triangle-exclamation"></i> REPORT AN ISSUE</h2>
+            </div>
+            <div class="form-wizard-card">
+                <div class="wizard-steps-bar">
+                    <span class="step-tab active" id="tabStep1"><i class="fa-solid fa-1"></i> 1ST: CLIENT INFO</span>
+                    <span class="step-tab" id="tabStep2"><i class="fa-solid fa-2"></i> 2ND: PRBLM DETAILS</span>
+                </div>
+                <form id="issueForm">
+                    <!-- Step 1 Pane -->
+                    <div class="form-pane active" id="paneStep1">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-user"></i> NAME *</label>
+                                <input type="text" id="clientName" class="form-control" placeholder="Enter Full Name" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-envelope"></i> EMAIL *</label>
+                                <input type="email" id="clientEmail" class="form-control" placeholder="Enter Email" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-phone"></i> PH NO *</label>
+                                <input type="tel" id="clientPhone" class="form-control" placeholder="Enter Mobile Number (+91)" required>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-calendar"></i> DATE *</label>
+                                <input type="date" id="clientDate" class="form-control" required>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" id="btnNext">Next Step <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+
+                    <!-- Step 2 Pane -->
+                    <div class="form-pane" id="paneStep2">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-list"></i> CATEGORY *</label>
+                                <select id="issueCategory" class="form-control" required>
+                                    <option value="" disabled selected>Select Category...</option>
+                                    <option value="Street Light Failure">Street Light Failure</option>
+                                    <option value="Water Supply Leakage">Water Supply Leakage</option>
+                                    <option value="Garbage / Waste Overflow">Garbage / Waste Overflow</option>
+                                    <option value="Road Potholes & Repairs">Road Potholes & Repairs</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label><i class="fa-solid fa-flag"></i> PRIORITY *</label>
+                                <select id="issuePriority" class="form-control" required>
+                                    <option value="" disabled selected>Select Priority...</option>
+                                    <option value="LOW">LOW</option>
+                                    <option value="MED">MED</option>
+                                    <option value="HIGH">HIGH</option>
+                                    <option value="EMERGENCY">EMERGENCY</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-full">
+                                <label><i class="fa-solid fa-location-dot"></i> LOCATION *</label>
+                                <select id="issueLocation" class="form-control" required>
+                                    <option value="" disabled selected>Select Location Dropdown...</option>
+                                    <option value="Park Street & Camac Street Crossing">Park Street & Camac Street Crossing</option>
+                                    <option value="Salt Lake Sector V - IT Hub">Salt Lake Sector V - IT Hub</option>
+                                    <option value="New Town Rajarhat Action Area 1">New Town Rajarhat Action Area 1</option>
+                                    <option value="Esplanade Metro Terminal Area">Esplanade Metro Terminal Area</option>
+                                </select>
+                            </div>
+                            <div class="form-group span-full">
+                                <label><i class="fa-solid fa-align-left"></i> DESCRIPTION *</label>
+                                <textarea id="issueDesc" class="form-control" rows="3" placeholder="Describe the issue with Kolkata landmarks..." required></textarea>
+                            </div>
+                            <div class="form-group span-full">
+                                <label><i class="fa-solid fa-image"></i> UPLOAD IMAGE SECTION</label>
+                                <div class="upload-box" id="uploadBox">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size:1.8rem;color:var(--primary)"></i>
+                                    <p style="font-size:0.85rem;margin-top:0.4rem">Click or Drag & Drop Photo Evidence</p>
+                                    <input type="file" id="issueImgInput" accept="image/*" style="display:none">
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between">
+                            <button type="button" class="btn btn-outline" id="btnBack"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-paper-plane"></i> SUBMIT BUTTON</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- REQUEST SERVICE STATUS -->
+    <section class="section bg-alt" id="request-service">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-list-check"></i> REQUEST SERVICE</h2>
+            </div>
+            <div class="request-grid">
+                <div class="request-card">
+                    <div class="request-card-header">
+                        <span>#SR01</span>
+                        <span>PENDING</span>
+                    </div>
+                    <h3><i class="fa-solid fa-lightbulb"></i> STREET LIGHT NOT WORKING</h3>
+                    <p class="request-location"><i class="fa-solid fa-location-dot"></i> Park Street & Camac St Crossing, Ward 63</p>
+                </div>
+                <div class="request-card">
+                    <div class="request-card-header">
+                        <span>#SR02</span>
+                        <span>IN PROGRESS</span>
+                    </div>
+                    <h3><i class="fa-solid fa-droplet-slash"></i> WATER SUPPLY LEAKAGE</h3>
+                    <p class="request-location"><i class="fa-solid fa-location-dot"></i> Salt Lake Sector V, Block EP & GP</p>
+                </div>
+                <div class="request-card">
+                    <div class="request-card-header">
+                        <span>#SR03</span>
+                        <span>RESOLVED</span>
+                    </div>
+                    <h3><i class="fa-solid fa-trash-can"></i> WASTE BIN OVERFLOW</h3>
+                    <p class="request-location"><i class="fa-solid fa-location-dot"></i> Esplanade Metro Station Gate 3</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CITY NOTIFICATIONS -->
+    <section class="section" id="notifications">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-bell"></i> CITY NOTIFICATION</h2>
+            </div>
+            <div class="notif-wrapper">
+                <select id="notifDropdown" class="notif-select">
+                    <option value="all">DROP DOWN LIST (Select Category)</option>
+                    <option value="emergency">Emergency Advisories</option>
+                    <option value="maintenance">KMC Municipal Notices</option>
+                    <option value="traffic">Kolkata Traffic Advisories</option>
+                </select>
+                <div class="notif-list-feed">
+                    <div class="notif-item" data-cat="emergency">
+                        <h4>Monsoon High Tide Advisory</h4>
+                        <p>Hooghly riverfront embankments monitoring active. Water logging alert for Central Kolkata.</p>
+                    </div>
+                    <div class="notif-item" data-cat="maintenance">
+                        <h4>Talla Tank Water Pipeline Repair</h4>
+                        <p>Scheduled maintenance in North Kolkata on Sunday (6 AM - 1 PM).</p>
+                    </div>
+                    <div class="notif-item" data-cat="traffic">
+                        <h4>Kolkata Metro Expansion Diversion</h4>
+                        <p>Traffic diverted near Bowbazar & Sealdah Metro stretch for underground work.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PUBLIC FACILITY INFO -->
+    <section class="section bg-alt" id="facilities">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fa-solid fa-building-columns"></i> PUBLIC FACILITY INFO</h2>
+            </div>
+            <div class="table-responsive">
+                <table class="facility-table">
+                    <thead>
+                        <tr>
+                            <th>FACILITY</th>
+                            <th>LOCATION</th>
+                            <th>AVAIL</th>
+                            <th>STATUS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>SSKM HOSPITAL & IPGMER</strong></td>
+                            <td>AJC Bose Road, Bhowanipore</td>
+                            <td>24 HR</td>
+                            <td><span class="status-pill status-active">ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>NATIONAL LIBRARY OF INDIA</strong></td>
+                            <td>Belvedere Road, Alipore</td>
+                            <td>8 AM - 8 PM</td>
+                            <td><span class="status-pill status-active">ACTIVE</span></td>
+                        </tr>
+                        <tr>
+                            <td><strong>KOLKATA METRO TRANSIT HUB</strong></td>
+                            <td>Esplanade Station Terminal</td>
+                            <td>6 AM - 10:30 PM</td>
+                            <td><span class="status-pill status-busy">BUSY</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer" id="contact">
+        <div class="container footer-grid">
+            <div class="footer-col">
+                <h4>QUICK LINK</h4>
+                <div class="footer-links">
+                    <a href="#home"><i class="fa-solid fa-chevron-right"></i> HOME</a>
+                    <a href="#services"><i class="fa-solid fa-chevron-right"></i> SERVICE</a>
+                    <a href="#report-issue"><i class="fa-solid fa-chevron-right"></i> REPORT ISSUE</a>
+                    <a href="#contact"><i class="fa-solid fa-chevron-right"></i> CONTACT</a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>CONTACT</h4>
+                <ul class="footer-contact">
+                    <li><i class="fa-solid fa-envelope"></i> <span>EMAIL: feedback@kmcgov.in</span></li>
+                    <li><i class="fa-solid fa-phone"></i> <span>PH NO: 1800-345-3375 / 112</span></li>
+                    <li><i class="fa-solid fa-location-dot"></i> <span>LOCATION: KMC Main Building, 5 S.N. Banerjee Road, Kolkata - 700013</span></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2026 Kolkata Municipal Corporation (KMC). All Rights Reserved. COPYRIGHT SECTION.</p>
+        </div>
+    </footer>
+
+    <!-- SUCCESS MODAL -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-card">
+            <i class="fa-solid fa-circle-check success-icon"></i>
+            <h3>Grievance Registered!</h3>
+            <p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0 1.2rem 0">Your complaint reference ID has been logged into the KMC Citizen Portal.</p>
+            <button class="btn btn-primary btn-block" id="closeModal">OK</button>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            /* LIVE CLOCK */
+            const updateClock = () => {
+                const el = document.getElementById('liveClock');
+                if (el) el.textContent = new Date().toLocaleTimeString('en-IN', { hour12: true });
+            };
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            /* REAL-TIME WEATHER & AQI FETCH */
+            async function fetchRealTimeKolkataData() {
+                try {
+                    const weatherRes = await fetch('https://api.open-meteo.com/v1/forecast?latitude=22.5726&longitude=88.3639&current_weather=true');
+                    if (weatherRes.ok) {
+                        const data = await weatherRes.json();
+                        const temp = Math.round(data.current_weather.temperature);
+                        document.getElementById('liveWeather').textContent = `${temp}°C (${temp > 30 ? 'Warm / Clear' : 'Pleasant'})`;
+                    }
+                    const aqiRes = await fetch('https://air-quality-api.open-meteo.com/v1/air-quality?latitude=22.5726&longitude=88.3639&current=pm2_5,us_aqi');
+                    if (aqiRes.ok) {
+                        const aqiData = await aqiRes.json();
+                        const val = aqiData.current ? Math.round(aqiData.current.us_aqi) : 62;
+                        document.getElementById('liveAQI').textContent = val <= 50 ? `Good (AQI ${val})` : val <= 100 ? `Moderate (AQI ${val})` : `Unhealthy (AQI ${val})`;
+                    }
+                } catch {
+                    document.getElementById('liveWeather').textContent = '29°C (Partly Cloudy)';
+                    document.getElementById('liveAQI').textContent = 'Moderate (AQI 68)';
+                }
+            }
+            fetchRealTimeKolkataData();
+            setInterval(fetchRealTimeKolkataData, 300000);
+
+            /* DATE AUTOFILL & ALERT DROPDOWN */
+            const dateInput = document.getElementById('clientDate');
+            if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+
+            const alertBtn = document.getElementById('alertBtn');
+            const alertDropdown = document.getElementById('alertDropdown');
+            if (alertBtn && alertDropdown) {
+                alertBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    alertDropdown.classList.toggle('active');
+                });
+                document.addEventListener('click', () => alertDropdown.classList.remove('active'));
+            }
+
+            /* LEAFLET MAP */
+            const mapEl = document.getElementById('leafletMap');
+            if (mapEl && typeof L !== 'undefined') {
+                const map = L.map('leafletMap').setView([22.5726, 88.3639], 13);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+                L.marker([22.5392, 88.3433]).addTo(map).bindPopup('<b>SSKM Hospital & IPGMER</b><br>24 HR Emergency & Trauma Care');
+                L.marker([22.5710, 88.3550]).addTo(map).bindPopup('<b>Lalbazar Police HQ</b><br>Kolkata Police Control Room 100/112');
+                L.marker([22.5644, 88.3517]).addTo(map).bindPopup('<b>Esplanade Metro Transit Hub</b><br>Kolkata Metro Interchange');
+            }
+
+            /* FORM WIZARD & MODAL */
+            const btnNext = document.getElementById('btnNext'), btnBack = document.getElementById('btnBack');
+            const paneStep1 = document.getElementById('paneStep1'), paneStep2 = document.getElementById('paneStep2');
+            const tabStep1 = document.getElementById('tabStep1'), tabStep2 = document.getElementById('tabStep2');
+            const issueForm = document.getElementById('issueForm'), successModal = document.getElementById('successModal'), closeModal = document.getElementById('closeModal');
+
+            if (btnNext) {
+                btnNext.addEventListener('click', () => {
+                    if (['clientName', 'clientEmail', 'clientPhone'].every(id => document.getElementById(id).value.trim())) {
+                        paneStep1.classList.remove('active'); paneStep2.classList.add('active');
+                        tabStep1.classList.remove('active'); tabStep2.classList.add('active');
+                    } else alert('Please fill out all required Client Info fields.');
+                });
+            }
+            if (btnBack) {
+                btnBack.addEventListener('click', () => {
+                    paneStep2.classList.remove('active'); paneStep1.classList.add('active');
+                    tabStep2.classList.remove('active'); tabStep1.classList.add('active');
+                });
+            }
+            const uploadBox = document.getElementById('uploadBox'), issueImgInput = document.getElementById('issueImgInput');
+            if (uploadBox && issueImgInput) uploadBox.addEventListener('click', () => issueImgInput.click());
+
+            if (issueForm) {
+                issueForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    if (successModal) successModal.classList.add('active');
+                    issueForm.reset();
+                    paneStep2.classList.remove('active'); paneStep1.classList.add('active');
+                    tabStep2.classList.remove('active'); tabStep1.classList.add('active');
+                });
+            }
+            if (closeModal && successModal) closeModal.addEventListener('click', () => successModal.classList.remove('active'));
+
+            /* NOTIFICATION FILTER */
+            const notifDropdown = document.getElementById('notifDropdown');
+            if (notifDropdown) {
+                notifDropdown.addEventListener('change', () => {
+                    const val = notifDropdown.value;
+                    document.querySelectorAll('.notif-item').forEach(item => {
+                        item.style.display = (val === 'all' || item.getAttribute('data-cat') === val) ? 'block' : 'none';
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

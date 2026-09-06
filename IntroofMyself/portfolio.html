@@ -1,0 +1,1297 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Srinjoy - Personal Portfolio Website">
+    <meta name="author" content="Srinjoy">
+    <title>Srinjoy Paul - Personal Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <style>
+/* ==========================================================================
+   Srinjoy Personal Portfolio Stylesheet
+   Theme: Modern Dark Glassmorphism
+   ========================================================================== */
+/* 1. Global Reset & Variables */
+:root {
+    --bg-main: #0b0f19;
+    --bg-card: rgba(22, 28, 45, 0.65);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-primary: #f1f5f9;
+    --text-secondary: #94a3b8;
+    /* Brand Accents */
+    --accent-primary: #6366f1; /* Indigo */
+    --accent-secondary: #14b8a6; /* Teal */
+    --accent-tertiary: #a855f7; /* Purple */
+    --accent-gradient: linear-gradient(135deg, #6366f1 0%, #14b8a6 100%);
+    /* Card details */
+    --shadow-main: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.15);
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+    width: 10px;
+}
+::-webkit-scrollbar-track {
+    background: #0b0f19;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #6366f1, #14b8a6);
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #4f46e5, #0d9488);
+}
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+html {
+    scroll-behavior: smooth;
+    font-size: 16px;
+}
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.6;
+    background-image:
+radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.08) 0%, transparent 40%),
+radial-gradient(circle at 90% 80%, rgba(20, 184, 166, 0.06) 0%, transparent 40%);
+    background-attachment: fixed;
+    overflow-x: hidden;
+}
+/* 2. Page Structure Wrapper */
+.portfolio-wrapper {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+/* 3. Header Section (Sticky Navigation) */
+.main-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background: rgba(11, 15, 25, 0.8);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    padding: 8px 0;
+    margin-bottom: 10px;
+}
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.logo {
+    font-family: 'Outfit', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #fff 40%, var(--accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(255, 255, 255, 0.05);
+}
+.tagline {
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    font-weight: 500;
+}
+.contact-info {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+/* 3. Navigation Bar */
+.nav-bar {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.05);
+}
+.nav-link.active {
+    color: #fff;
+    background: rgba(20, 184, 166, 0.18);
+    border-color: rgba(20, 184, 166, 0.45);
+    font-weight: 600;
+    box-shadow: 0 0 15px rgba(20, 184, 166, 0.25);
+}
+/* 4. Section Card (Base Card Styling) */
+.section-card {
+    background-color: var(--bg-card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 12px 18px;
+    margin-bottom: 10px;
+    box-shadow: var(--shadow-main);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 170px;
+    /* Offset to prevent card content from being hidden under sticky header */
+}
+.section-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--accent-gradient);
+    opacity: 0.8;
+}
+.section-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(99, 102, 241, 0.25);
+    box-shadow: var(--shadow-main), 0 0 25px rgba(99, 102, 241, 0.12);
+}
+.section-card h2 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #fff 50%, var(--accent-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 10px;
+    position: relative;
+    display: inline-block;
+}
+/* 5. About Me */
+.about-article p {
+    color: var(--text-secondary);
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+}
+.about-article p:last-child {
+    margin-bottom: 0;
+}
+/* 6. Education (Tables) */
+.table-container {
+    overflow-x: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+}
+.styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    background: rgba(15, 23, 42, 0.3);
+}
+.styled-table caption {
+    display: none;
+    /* Semantic but hidden visually in modern design */
+}
+.styled-table th,
+.styled-table td {
+    padding: 8px 12px;
+}
+.styled-table th {
+    background: rgba(30, 41, 59, 0.5);
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-bottom: 1px solid var(--border-color);
+}
+.styled-table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+.styled-table tr:last-child td {
+    border-bottom: none;
+}
+.styled-table tr:hover td {
+    background: rgba(255, 255, 255, 0.02);
+    color: #fff;
+}
+.styled-table td.semi-bold {
+    font-weight: 500;
+    color: #fff;
+}
+.year-badge {
+    color: var(--accent-secondary) !important;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+}
+/* 7. Skills Section (Grids & Custom Progress Bars) */
+.skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 16px;
+}
+@media (max-width: 768px) {
+    .skills-grid {
+        grid-template-columns: 1fr;
+    }
+}
+.skills-list-container h3,
+.skills-progress-container h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+.skills-list-grouped {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.skills-list-grouped li {
+    background: rgba(99, 102, 241, 0.08);
+    border: 1px solid rgba(99, 102, 241, 0.15);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 0.92rem;
+    transition: var(--transition);
+}
+.skills-list-grouped li strong {
+    color: #a5b4fc;
+    font-weight: 600;
+}
+.skills-list-grouped li:hover {
+    border-color: rgba(20, 184, 166, 0.3);
+    background: rgba(99, 102, 241, 0.12);
+    transform: translateX(4px);
+}
+.progress-group {
+    margin-bottom: 8px;
+}
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: #fff;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+.progress-value {
+    color: var(--accent-secondary);
+}
+.custom-progress {
+    width: 100%;
+    height: 8px;
+    -webkit-appearance: none;
+    appearance: none;
+    border: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+}
+/* Chrome/Safari progress colors */
+.custom-progress::-webkit-progress-bar {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+.custom-progress::-webkit-progress-value {
+    background: var(--accent-gradient);
+    border-radius: 4px;
+}
+/* Firefox progress colors */
+.custom-progress::-moz-progress-bar {
+    background: var(--accent-gradient);
+    border-radius: 4px;
+}
+/* 8. Projects Grid & Cards */
+.projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 12px;
+}
+.project-item {
+    background: rgba(15, 23, 42, 0.3);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 14px 18px;
+    transition: var(--transition);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.project-item:hover {
+    background: rgba(15, 23, 42, 0.5);
+    border-color: rgba(20, 184, 166, 0.2);
+    transform: scale(1.02);
+}
+.project-item h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+.project-desc {
+    color: var(--text-secondary);
+    font-size: 0.92rem;
+    margin-bottom: 10px;
+    flex-grow: 1;
+}
+.project-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tech-tag {
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.15);
+    color: #2dd4bf;
+    font-size: 0.78rem;
+    padding: 4px 10px;
+    border-radius: 50px;
+    font-weight: 600;
+}
+/* 9. Achievements & Certifications (Ordered & Unordered Lists) */
+.achievements-list,
+.certifications-list {
+    padding-left: 20px;
+}
+.achievements-list li,
+.certifications-list li {
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    font-size: 0.98rem;
+    line-height: 1.4;
+}
+.achievements-list li::marker {
+    color: var(--accent-primary);
+    font-weight: 700;
+}
+.certifications-list li::marker {
+    color: var(--accent-secondary);
+}
+/* 10. Buttons & Actions */
+.btn {
+    display: inline-block;
+    padding: 8px 18px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 1px solid transparent;
+}
+.btn-primary {
+    background: var(--accent-gradient);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}
+.btn-secondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    border-color: var(--border-color);
+}
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+/* 11. Resume Section */
+.resume-section {
+    text-align: center;
+}
+.resume-section p {
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-size: 1.02rem;
+}
+.resume-actions {
+    display: flex;
+    justify-content: center;
+}
+/* 12. Multimedia Profile Frame */
+.multimedia-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+.profile-frame {
+    position: relative;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 4px;
+    background: linear-gradient(135deg, #6366f1, #a855f7, #ec4899);
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.4);
+    margin-top: 8px;
+}
+.profile-pic {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 4px solid #0f172a;
+    display: block;
+}
+/* 13. Location Maps Wrapper */
+.location-section {
+    display: flex;
+    flex-direction: column;
+}
+.location-text {
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+.location-text strong {
+    color: #fff;
+}
+.map-wrapper {
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-main);
+}
+.embedded-map {
+    border: none;
+    display: block;
+}
+/* 14. Contact Form */
+.contact-form {
+    width: 100%;
+}
+.form-fieldset {
+    border: none;
+    outline: none;
+}
+.form-legend {
+    display: none;
+    /* Semantic but hidden */
+}
+.form-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+@media (max-width: 600px) {
+    .form-group-row {
+        grid-template-columns: 1fr;
+    }
+}
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+}
+.form-group label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group textarea {
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 0.95rem;
+    transition: var(--transition);
+    outline: none;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+    background: rgba(15, 23, 42, 0.6);
+}
+.radio-group {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+.radio-label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+}
+.radio-options {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+.radio-options input[type="radio"] {
+    accent-color: var(--accent-primary);
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+.radio-options label {
+    margin: 0;
+    color: #fff;
+    font-size: 0.92rem;
+    cursor: pointer;
+}
+.form-actions {
+    display: flex;
+    gap: 12px;
+}
+.form-actions input[type="submit"] {
+    border: none;
+}
+.form-actions input[type="reset"] {
+    border: 1px solid var(--border-color);
+}
+/* 15. Social Media Icons */
+.social-links {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 8px;
+}
+.social-btn {
+    text-decoration: none;
+    font-size: 0.92rem;
+    font-weight: 600;
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    color: #fff;
+    text-align: center;
+    transition: var(--transition);
+    flex-grow: 1;
+    max-width: 200px;
+    box-shadow: var(--shadow-main);
+}
+.linkedin-btn {
+    background: #0077b5;
+}
+.linkedin-btn:hover {
+    background: #006297;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 119, 181, 0.3);
+}
+.github-btn {
+    background: #24292e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.github-btn:hover {
+    background: #1a1e22;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+.instagram-btn {
+    background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+}
+.instagram-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(220, 39, 67, 0.3);
+}
+/* 16. Footer Styles */
+.main-footer {
+    border-top: 1px solid var(--border-color);
+    padding: 16px 0;
+    margin-top: 20px;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+.footer-address {
+    font-style: normal;
+    margin-bottom: 6px;
+}
+.footer-address a {
+    color: var(--accent-secondary);
+    text-decoration: none;
+    font-weight: 500;
+}
+.footer-address a:hover {
+    text-decoration: underline;
+}
+.main-footer p {
+    margin-bottom: 4px;
+}
+.footer-assignment {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.15);
+    margin-top: 8px;
+}
+/* Personal Information Card Grid (portfolio.html) */
+.personal-info-grid {
+    margin-top: 12px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+.personal-info-grid h3 {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.15rem;
+    color: #fff;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.personal-details-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+    list-style: none;
+    padding-left: 0;
+}
+.detail-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+.detail-item:hover {
+    border-color: rgba(20, 184, 166, 0.25);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-1.5px);
+}
+.detail-item dt {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.detail-item dd {
+    font-size: 0.9rem;
+    color: #fff;
+    font-weight: 600;
+    margin-left: 10px;
+}
+/* 17. Declaration Section Custom Styles */
+.declaration-text {
+    font-style: italic;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    font-size: 1.05rem;
+}
+.declaration-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 8px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+.declaration-meta-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: var(--transition);
+}
+.declaration-meta-item:hover {
+    border-color: rgba(20, 184, 166, 0.25);
+    background: rgba(255, 255, 255, 0.04);
+    transform: translateY(-1.5px);
+}
+.declaration-meta-item .meta-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+.declaration-meta-item .meta-value {
+    font-size: 0.95rem;
+    color: #fff;
+    font-weight: 600;
+}
+.signature-text {
+    font-family: 'Outfit', sans-serif;
+    color: var(--accent-secondary) !important;
+}
+/* Live Clock & Pulse Dot Styling */
+.live-status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(20, 184, 166, 0.08);
+    border: 1px solid rgba(20, 184, 166, 0.15);
+    padding: 6px 12px;
+    border-radius: 50px;
+    margin-top: 10px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--accent-secondary);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+    animation: pulse 1.6s infinite;
+}
+.status-text {
+    color: var(--text-secondary);
+}
+.clock-time {
+    color: #fff;
+    font-weight: 600;
+    font-family: 'Outfit', monospace;
+}
+@keyframes pulse {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(20, 184, 166, 0.7);
+    }
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 6px rgba(20, 184, 166, 0);
+    }
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(20, 184, 166, 0);
+    }
+}
+/* Location Link Styling */
+.location-link {
+    color: inherit;
+    text-decoration: underline;
+    transition: var(--transition);
+}
+.location-link:hover {
+    color: var(--accent-secondary);
+}
+    </style>
+</head>
+<body>
+    <!-- Main Wrapper -->
+    <div class="portfolio-wrapper">
+<!-- 2. HEADER SECTION -->
+<header class="main-header">
+    <div class="header-content">
+        <h1 class="logo">SRINJOY PAUL</h1>
+        <p class="tagline">MCA Student | Programmer | Web Technology Learner</p>
+        <p class="contact-info">Owner: Srinjoy Paul | Phone: +91 6291491726 | LinkedIn: <a
+                href="https://www.linkedin.com/in/srinjoy-paul-b48b43294/" target="_blank"
+                class="location-link">srinjoy-paul</a></p>
+        <div class="live-status-badge">
+            <span class="pulse-dot"></span>
+            <span class="status-text">Active Now: </span>
+            <span id="live-clock" class="clock-time">--:--:-- --</span>
+        </div>
+    </div>
+    <nav class="nav-bar">
+        <a href="#about" class="nav-link">About Me</a>
+        <a href="#education" class="nav-link">Education</a>
+        <a href="#skills" class="nav-link">Skills</a>
+        <a href="#projects" class="nav-link">Projects</a>
+        <a href="#resume" class="nav-link">Resume</a>
+        <a href="#multimedia" class="nav-link">Multimedia</a>
+        <a href="#location" class="nav-link">Location</a>
+        <a href="#declaration" class="nav-link">Declaration</a>
+        <a href="#contact" class="nav-link">Contact</a>
+    </nav>
+</header>
+<main class="content-area">
+    <!-- 3. ABOUT ME -->
+    <section id="about" class="section-card">
+        <h2>About Me</h2>
+        <article class="about-article">
+            <p>
+                Enthusiastic Master of Computer Applications (MCA) student with a strong foundation in software
+                engineering,
+                object-oriented programming, and modern web technologies.
+            </p>
+            <p>
+                Passionate about designing robust database solutions, learning advanced web technology
+                frameworks,
+                and building user-centric academic applications.
+            </p>
+            <div class="personal-info-grid">
+                <h3>Personal Information</h3>
+                <dl class="personal-details-list">
+                    <div class="detail-item">
+                        <dt>Father's Name:</dt>
+                        <dd>Prosanta Kumar Paul</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Mother's Name:</dt>
+                        <dd>Paramita Paul</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Marital Status:</dt>
+                        <dd>Unmarried</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Languages Known:</dt>
+                        <dd>Bengali, English, Hindi</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Hobbies:</dt>
+                        <dd>Reading books, Chess</dd>
+                    </div>
+                    <div class="detail-item">
+                        <dt>Religion:</dt>
+                        <dd>Hindu</dd>
+                    </div>
+                </dl>
+            </div>
+        </article>
+    </section>
+    <!-- 4. EDUCATIONAL QUALIFICATION -->
+    <section id="education" class="section-card">
+        <h2>Educational Qualification</h2>
+        <div class="table-container">
+            <table class="styled-table">
+                <caption><strong>Academic Details</strong></caption>
+                <thead>
+                    <tr>
+                        <th>Qualification</th>
+                        <th>Board/University</th>
+                        <th>Year</th>
+                        <th>Division/Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="semi-bold">Master of Computer Applications (MCA)</td>
+                        <td>Techno India University</td>
+                        <td class="year-badge">Pursuing</td>
+                        <td>Currently Studying</td>
+                    </tr>
+                    <tr>
+                        <td class="semi-bold">Bachelor of Computer Applications (Hons.)</td>
+                        <td>Techno India University</td>
+                        <td class="year-badge">2025</td>
+                        <td>Completed (SGPA: 9.03, CGPA: 7.8)</td>
+                    </tr>
+                    <tr>
+                        <td class="semi-bold">Higher Secondary (12th)</td>
+                        <td>C.B.S.E</td>
+                        <td class="year-badge">2022</td>
+                        <td>First Division (85.4%)</td>
+                    </tr>
+                    <tr>
+                        <td class="semi-bold">Secondary (10th)</td>
+                        <td>C.B.S.E</td>
+                        <td class="year-badge">2020</td>
+                        <td>First Division (71.4%)</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <!-- 5. TECHNICAL SKILLS -->
+    <section id="skills" class="section-card">
+        <h2>Technical Skills</h2>
+        <div class="skills-grid">
+            <div class="skills-list-container">
+                <h3>Key Skills</h3>
+                <ul class="skills-list-grouped">
+                    <li>Basic knowledge in Computer Programming</li>
+                    <li>Proficient with MS Word, MS Excel, SQL, Python</li>
+                    <li>Basic knowledge in Java</li>
+                    <li>Good verbal and written communication skills</li>
+                    <li>Strong analytical and problem-solving abilities</li>
+                    <li>Quick learner with adaptability to new technologies</li>
+                </ul>
+            </div>
+            <div class="skills-progress-container">
+                <h3>Proficiency Levels</h3>
+                <div class="progress-group">
+                    <div class="progress-label">
+                        <span>Python</span>
+                        <span class="progress-value">75%</span>
+                    </div>
+                    <progress value="75" max="100" class="custom-progress">75%</progress>
+                </div>
+                <div class="progress-group">
+                    <div class="progress-label">
+                        <span>SQL</span>
+                        <span class="progress-value">70%</span>
+                    </div>
+                    <progress value="70" max="100" class="custom-progress">70%</progress>
+                </div>
+                <div class="progress-group">
+                    <div class="progress-label">
+                        <span>Java</span>
+                        <span class="progress-value">50%</span>
+                    </div>
+                    <progress value="50" max="100" class="custom-progress">50%</progress>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- 6. ACADEMIC PROJECTS -->
+    <section id="projects" class="section-card">
+        <h2>Academic Projects</h2>
+        <div class="projects-grid">
+            <article class="project-item">
+                <h3>Student Management System</h3>
+                <p class="project-desc">
+                    Designed a desktop application to record, manage, and fetch student personal and academic
+                    data.
+                    Implemented JDBC for relational database connectivity and user authorization mechanisms.
+                </p>
+                <div class="project-meta">
+                    <span class="tech-tag">Java</span>
+                    <span class="tech-tag">MySQL</span>
+                </div>
+            </article>
+            <article class="project-item">
+                <h3>Personal Portfolio Website</h3>
+                <p class="project-desc">
+                    Built a fully responsive and semantic personal website demonstrating modern HTML5
+                    capabilities.
+                    Incorporated accessibility (a11y) standards, maps, and forms without framework styling.
+                </p>
+                <div class="project-meta">
+                    <span class="tech-tag">HTML5</span>
+                    <span class="tech-tag">Web Tech</span>
+                </div>
+            </article>
+            <article class="project-item">
+                <h3>Relational Library Database</h3>
+                <p class="project-desc">
+                    Structured database schema to maintain library operations including book issues, returns,
+                    and fine tracking.
+                    Wrote complex queries, triggers, and stored procedures to optimize search queries and check
+                    availability.
+                </p>
+                <div class="project-meta">
+                    <span class="tech-tag">SQL</span>
+                    <span class="tech-tag">DBMS</span>
+                </div>
+            </article>
+        </div>
+    </section>
+    <!-- 7. ACHIEVEMENTS -->
+    <section id="achievements" class="section-card">
+        <h2>Achievements</h2>
+        <ol class="achievements-list">
+            <li><strong>Hackathon Runner-Up:</strong> Secured 2nd place in 'CodeForge 2025' at college level.
+            </li>
+        </ol>
+    </section>
+    <!-- 8. CERTIFICATIONS -->
+    <section id="certifications" class="section-card">
+        <h2>Certifications</h2>
+        <ul class="certifications-list">
+            <li>NPTEL Online Certification: Programming in Java (Elite+Gold)</li>
+            <li>IBM Cognitive Class: Python for Data Science</li>
+            <li>freeCodeCamp: Responsive Web Design</li>
+        </ul>
+    </section>
+    <!-- 9. RESUME SECTION -->
+    <section id="resume" class="section-card resume-section">
+        <h2>Resume</h2>
+        <p>
+            My resume contains my educational qualifications,
+            technical skills, projects and other professional details.
+        </p>
+        <div class="resume-actions">
+            <a href="resume.pdf" download class="btn btn-primary">
+                Download My Resume
+            </a>
+        </div>
+    </section>
+    <!-- 10. MULTIMEDIA -->
+    <section id="multimedia" class="section-card multimedia-section">
+        <h2>Multimedia</h2>
+        <h3>Profile Image</h3>
+        <div class="profile-frame">
+            <img src="profile.jpg" alt="Srinjoy Profile Picture" class="profile-pic">
+        </div>
+    </section>
+    <!-- 11. LOCATION -->
+    <section id="location" class="section-card location-section">
+        <h2>My Location</h2>
+        <p class="location-text" id="live-location-container">
+            <strong>Location:</strong> 18/B, Panchanantala, Bahiragath Colony, Jawpur, Dum Dum, South Dumdum,
+            West Bengal 700074
+        </p>
+        <div class="location-actions" style="margin-bottom: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+            <a id="live-map-link"
+                href="https://www.google.com/maps/place/22%C2%B036'58.5%22N+88%C2%B024'08.5%22E/@22.6162568,88.4023664,16z"
+                target="_blank" class="btn btn-secondary"
+                style="padding: 6px 14px; font-size: 0.88rem; display: inline-block; text-decoration: none;">
+                View on Google Maps
+            </a>
+            <button id="track-gps-btn" class="btn btn-primary"
+                style="padding: 8px 16px; font-size: 0.88rem; display: inline-block; border: none; cursor: pointer;">
+                Track My Live GPS
+            </button>
+        </div>
+        <div class="map-wrapper">
+            <iframe id="live-map-iframe"
+                src="https://www.google.com/maps?q=18/B,+Panchanantala,+Bahiragath+Colony,+Jawpur,+Dum+Dum,+South+Dumdum,+West+Bengal+700074&output=embed"
+                width="100%" height="350" title="My Location" class="embedded-map" loading="lazy">
+            </iframe>
+        </div>
+    </section>
+    <!-- 12. CONTACT ME -->
+    <section id="contact" class="section-card contact-section">
+        <h2>Contact Me</h2>
+        <div class="contact-details-card" style="margin-top: 15px;">
+            <dl class="personal-details-list">
+                <div class="detail-item">
+                    <dt>Name:</dt>
+                    <dd>Srinjoy Paul</dd>
+                </div>
+                <div class="detail-item">
+                    <dt>Phone Number:</dt>
+                    <dd><a href="tel:+916291491726" style="color: inherit; text-decoration: none;">+91
+                            6291491726</a></dd>
+                </div>
+                <div class="detail-item" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+                    <dt>Email IDs:</dt>
+                    <dd style="margin-left: 0; font-size: 0.88rem; width: 100%;">
+                        <a href="mailto:paulsrinjoy2003@gmail.com"
+                            style="color: var(--accent-secondary); text-decoration: none; display: block;">paulsrinjoy2003@gmail.com</a>
+                        <a href="mailto:shivamsaha2015@gmail.com"
+                            style="color: var(--text-secondary); text-decoration: none; display: block; font-size: 0.82rem; font-weight: 500; margin-top: 4px;">Alternative:
+                            shivamsaha2015@gmail.com</a>
+                    </dd>
+                </div>
+            </dl>
+        </div>
+    </section>
+    <!-- 13. SOCIAL MEDIA -->
+    <section id="social" class="section-card social-section">
+        <h2>Social Media</h2>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/srinjoy-paul-b48b43294/" target="_blank"
+                class="social-btn linkedin-btn">LinkedIn</a>
+            <a href="https://github.com/Srinjoy-Paul-lion" target="_blank"
+                class="social-btn github-btn">GitHub</a>
+        </div>
+    </section>
+    <!-- 14. DECLARATION -->
+    <section id="declaration" class="section-card declaration-section">
+        <h2>Declaration</h2>
+        <div class="declaration-content">
+            <p class="declaration-text">
+                I hereby declare that all the above furnished information is true to the best of my knowledge
+                and belief.
+            </p>
+            <div class="declaration-meta-grid">
+                <div class="declaration-meta-item">
+                    <span class="meta-label">Place:</span>
+                    <span class="meta-value">Dum Dum, South Dumdum</span>
+                </div>
+                <div class="declaration-meta-item">
+                    <span class="meta-label">Date:</span>
+                    <span class="meta-value" id="declaration-date">05/03/2026</span>
+                </div>
+                <div class="declaration-meta-item signature-item">
+                    <span class="meta-label">Signature:</span>
+                    <span class="meta-value signature-text">Srinjoy Paul</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+<!-- 14. FOOTER -->
+<footer class="main-footer">
+    <address class="footer-address">
+        Owner: Srinjoy Paul | Phone: <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
+            fill="#25D366" class="bi bi-whatsapp" viewBox="0 0 16 16"
+            style="vertical-align: -1px; margin-right: 4px; display: inline-block;">
+            <path
+                d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.907h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c1.11-4.287 4.566-6.622 7.785-6.622 3.218 0 5.833 2.615 5.836 5.836.003 3.221-2.612 5.836-5.83 5.836zM11.534 8.87c-.194-.099-1.15-.567-1.327-.63-.177-.063-.305-.095-.434.099-.129.194-.5.63-.614.758-.113.127-.227.142-.42.043-.194-.099-.82-.302-1.562-.962-.577-.515-.967-1.152-1.08-1.346-.113-.194-.012-.299.085-.397.088-.088.194-.227.29-.341.097-.114.129-.194.194-.325.064-.13.032-.244-.016-.343-.049-.099-.434-1.045-.596-1.436-.157-.381-.311-.328-.429-.328-.112-.001-.24-.001-.368-.001-.129 0-.34.049-.517.244-.177.194-.678.662-.678 1.615s.693 1.868.791 2.001c.097.132 1.363 2.08 3.302 2.914.461.198.82.317 1.1.408.463.147.885.126 1.218.077.371-.055 1.15-.47 1.312-.924.162-.454.162-.843.113-.924-.049-.081-.177-.129-.371-.228z" />
+        </svg>+91 6291491726 | LinkedIn: <a href="https://www.linkedin.com/in/srinjoy-paul-b48b43294/"
+            target="_blank" style="color: var(--accent-secondary); text-decoration: none;">srinjoy-paul</a>
+    </address>
+    <p>&copy; 2026 Srinjoy. All Rights Reserved.</p>
+    <p class="footer-assignment">MCA Web Technology Lab Assignment - 1</p>
+</footer>
+    </div>
+    <!-- Real-time Script -->
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Set Declaration Date
+    const declarationDateEl = document.getElementById("declaration-date");
+    if (declarationDateEl) {
+        const today = new Date();
+        const dd = String(today.getDate()).padStart(2, '0');
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const yyyy = today.getFullYear();
+        declarationDateEl.textContent = `${dd}/${mm}/${yyyy}`;
+    }
+    // 2. Real-time Clock
+    const liveClockEl = document.getElementById("live-clock");
+    if (liveClockEl) {
+        function updateClock() {
+            const now = new Date();
+            let hours = now.getHours();
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            const hoursStr = String(hours).padStart(2, '0');
+            liveClockEl.textContent = `${hoursStr}:${minutes}:${seconds} ${ampm}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+    }
+    // 3. Scroll spy - Active Nav Link Highlighting
+    const navLinks = document.querySelectorAll(".nav-bar a.nav-link");
+    const sections = [];
+    navLinks.forEach(link => {
+        const targetId = link.getAttribute("href");
+        const targetSection = document.querySelector(targetId);
+        if (targetSection) {
+            sections.push(targetSection);
+        }
+    });
+    window.addEventListener("scroll", () => {
+        let currentSectionId = "";
+        // Check if we are at the bottom of the page
+        if ((window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 60) {
+            const lastLink = navLinks[navLinks.length - 1];
+            if (lastLink) {
+                currentSectionId = lastLink.getAttribute("href").substring(1);
+            }
+        } else if (window.scrollY < 80) {
+            // At the absolute top, highlight the first section (About Me)
+            if (navLinks[0]) {
+                currentSectionId = navLinks[0].getAttribute("href").substring(1);
+            }
+        } else {
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 250; // Adjust to match the tall header height (240px + margin padding cushion)
+                if (window.scrollY >= sectionTop) {
+                    currentSectionId = section.getAttribute("id");
+                }
+            });
+        }
+        navLinks.forEach(link => {
+            if (link.getAttribute("href") === `#${currentSectionId}`) {
+                link.classList.add("active");
+            } else {
+                link.classList.remove("active");
+            }
+        });
+    });
+    // 4. Real-time GPS Tracker
+    const mapIframe = document.getElementById("live-map-iframe");
+    const mapLink = document.getElementById("live-map-link");
+    const locationContainer = document.getElementById("live-location-container");
+    const trackBtn = document.getElementById("track-gps-btn");
+    let lastLoadedLat = null;
+    let lastLoadedLng = null;
+    let watchId = null;
+    function startTracking() {
+        if (!navigator.geolocation) return;
+        if (trackBtn) {
+            trackBtn.textContent = "Tracking GPS... (Click to Stop)";
+            trackBtn.classList.remove("btn-primary");
+            trackBtn.classList.add("btn-secondary");
+        }
+        watchId = navigator.geolocation.watchPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            // Round coordinates to 4 decimal places (~11 meters) to filter out stationary GPS noise and prevent flickering
+            const roundedLat = parseFloat(lat.toFixed(4));
+            const roundedLng = parseFloat(lng.toFixed(4));
+            if (roundedLat !== lastLoadedLat || roundedLng !== lastLoadedLng) {
+                lastLoadedLat = roundedLat;
+                lastLoadedLng = roundedLng;
+                if (mapIframe) {
+                    mapIframe.src = `https://www.google.com/maps?q=${lat},${lng}&output=embed`;
+                }
+            }
+            if (mapLink) {
+                mapLink.href = `https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},16z`;
+            }
+            const gpsIndicator = document.getElementById("live-gps-coords");
+            if (gpsIndicator) {
+                gpsIndicator.textContent = ` (Live GPS: ${lat.toFixed(6)}, ${lng.toFixed(6)})`;
+            } else if (locationContainer) {
+                const span = document.createElement("span");
+                span.id = "live-gps-coords";
+                span.style.color = "var(--accent-secondary)";
+                span.style.fontSize = "0.85rem";
+                span.style.fontWeight = "600";
+                span.textContent = ` (Live GPS: ${lat.toFixed(6)}, ${lng.toFixed(6)})`;
+                locationContainer.appendChild(span);
+            }
+        }, (error) => {
+            console.warn("Geolocation watchPosition error:", error);
+            stopTracking();
+        }, {
+            enableHighAccuracy: true,
+            maximumAge: 10000,
+            timeout: 5000
+        });
+    }
+    function stopTracking() {
+        if (watchId !== null) {
+            navigator.geolocation.clearWatch(watchId);
+            watchId = null;
+        }
+        if (trackBtn) {
+            trackBtn.textContent = "Track My Live GPS";
+            trackBtn.classList.remove("btn-secondary");
+            trackBtn.classList.add("btn-primary");
+        }
+        // Revert map to default address pin
+        if (mapIframe) {
+            mapIframe.src = "https://www.google.com/maps?q=18/B,+Panchanantala,+Bahiragath+Colony,+Jawpur,+Dum+Dum,+South+Dumdum,+West+Bengal+700074&output=embed";
+        }
+        if (mapLink) {
+            mapLink.href = "https://www.google.com/maps/place/22%C2%B036'58.5%22N+88%C2%B024'08.5%22E/@22.6162568,88.4023664,16z";
+        }
+        const gpsIndicator = document.getElementById("live-gps-coords");
+        if (gpsIndicator) {
+            gpsIndicator.remove();
+        }
+    }
+    if (navigator.geolocation) {
+        // Start tracking immediately on page load to show real-time GPS info automatically
+        startTracking();
+        if (trackBtn) {
+            trackBtn.addEventListener("click", () => {
+                if (watchId !== null) {
+                    stopTracking();
+                } else {
+                    startTracking();
+                }
+            });
+        }
+    }
+});
+    </script>
+</body>
+</html>
