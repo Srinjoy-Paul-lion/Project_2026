@@ -1,0 +1,2358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Employee Management & Payroll System (ES6)</title>
+  <meta name="description" content="A modern Employee Management and Payroll System demonstrating ES6 features like Classes, map, filter, find, reduce, arrow functions, and scope declarations.">
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
+
+  <style>
+/* ==========================================================================
+   Employee Management & Payroll System - Modern Glassmorphism Styling
+   ========================================================================== */
+
+:root {
+  /* Palette Tokens */
+  --bg-dark: #0b0f19;
+  --bg-canvas: #0f172a;
+  --surface-card: rgba(30, 41, 59, 0.7);
+  --surface-card-hover: rgba(51, 65, 85, 0.8);
+  --surface-modal: #1e293b;
+  --surface-input: rgba(15, 23, 42, 0.8);
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-highlight: rgba(99, 102, 241, 0.3);
+
+  /* Primary & Accent Colors */
+  --primary: #6366f1;
+  --primary-hover: #4f46e5;
+  --primary-glow: rgba(99, 102, 241, 0.25);
+  
+  --emerald: #10b981;
+  --emerald-bg: rgba(16, 185, 129, 0.15);
+  --rose: #f43f5e;
+  --rose-bg: rgba(244, 63, 94, 0.15);
+  --amber: #f59e0b;
+  --amber-bg: rgba(245, 158, 11, 0.15);
+  --purple: #a855f7;
+  --purple-bg: rgba(168, 85, 247, 0.15);
+  --blue: #3b82f6;
+  --blue-bg: rgba(59, 130, 246, 0.15);
+
+  /* Typography */
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-dim: #64748b;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-code: 'Fira Code', monospace;
+
+  /* Geometry & Shadows */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  --shadow-glow: 0 0 20px rgba(99, 102, 241, 0.2);
+  --backdrop-blur: blur(12px);
+}
+
+/* Reset & Global Base */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-canvas);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+    radial-gradient(at 50% 50%, rgba(168, 85, 247, 0.05) 0px, transparent 50%);
+  color: var(--text-main);
+  min-height: 100vh;
+  line-height: 1.5;
+  padding-bottom: 60px;
+}
+
+/* Typography Utilities */
+h1, h2, h3, h4 {
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+code {
+  font-family: var(--font-code);
+  font-size: 0.85em;
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(99, 102, 241, 0.2);
+}
+
+.text-emerald { color: var(--emerald) !important; }
+.text-rose { color: var(--rose) !important; }
+.text-amber { color: var(--amber) !important; }
+.text-purple { color: var(--purple) !important; }
+.text-primary { color: var(--primary) !important; }
+
+/* Header Component */
+.app-header {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: var(--backdrop-blur);
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-icon {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  color: #ffffff;
+  box-shadow: var(--shadow-glow);
+}
+
+.logo-area h1 {
+  font-size: 22px;
+  letter-spacing: -0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.logo-area h1 span {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, var(--primary), var(--purple));
+  color: white;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), #4f46e5);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+  background: linear-gradient(135deg, #4f46e5, #4338ca);
+}
+
+.btn-secondary {
+  background: rgba(30, 41, 59, 0.9);
+  color: var(--text-main);
+  border-color: var(--border-color);
+}
+
+.btn-secondary:hover {
+  background: rgba(51, 65, 85, 0.9);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-color);
+}
+
+.btn-outline:hover {
+  color: var(--text-main);
+  border-color: var(--primary);
+  background: rgba(99, 102, 241, 0.1);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+  margin-left: 10px;
+}
+
+.btn-link:hover {
+  color: #818cf8;
+}
+
+/* Main Container Layout */
+.main-container {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 32px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* KPI Statistics Section */
+.stats-section {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stats-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats-header h2 {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 20px;
+}
+
+.badge-accent {
+  background: rgba(99, 102, 241, 0.15);
+  color: #a5b4fc;
+  border: 1px solid rgba(99, 102, 241, 0.3);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.stat-card {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-highlight);
+}
+
+.stat-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.icon-blue { background: var(--blue-bg); color: var(--blue); }
+.icon-emerald { background: var(--emerald-bg); color: var(--emerald); }
+.icon-purple { background: var(--purple-bg); color: var(--purple); }
+.icon-amber { background: var(--amber-bg); color: var(--amber); }
+
+.stat-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.stat-details h3 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--text-main);
+
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 170px;
+}
+
+.stat-subtext {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Controls Section */
+.controls-section {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 280px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-dim);
+  font-size: 14px;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  background: var(--surface-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-right: 4px;
+}
+
+.filter-btn {
+  padding: 7px 14px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.6);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.filter-btn.active {
+  background: var(--primary-glow);
+  color: #a5b4fc;
+  border-color: var(--primary);
+}
+
+.filter-select {
+  padding: 7px 14px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.8);
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+.filter-select:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.view-switch {
+  display: flex;
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 3px;
+}
+
+.view-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.view-btn.active {
+  background: var(--surface-card-hover);
+  color: var(--text-main);
+}
+
+.filter-status {
+  font-size: 13px;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+/* Records Section */
+.records-section {
+  width: 100%;
+}
+
+/* Table View */
+.table-container {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: var(--shadow-card);
+}
+
+.employee-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.employee-table th {
+  background: rgba(15, 23, 42, 0.9);
+  color: var(--text-muted);
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.employee-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-color);
+  vertical-align: middle;
+}
+
+.employee-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.employee-table tbody tr:hover {
+  background: rgba(51, 65, 85, 0.4);
+}
+
+.employee-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.emp-id-badge {
+  font-family: var(--font-code);
+  font-weight: 600;
+  font-size: 12px;
+  color: #a5b4fc;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.emp-name-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.emp-name-block strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.dept-pill {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+}
+
+.stars-container {
+  display: inline-flex;
+  gap: 3px;
+  font-size: 13px;
+}
+
+.table-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.action-btn {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  color: var(--text-main);
+  background: rgba(51, 65, 85, 0.8);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.action-btn.edit-btn:hover {
+  color: #a5b4fc;
+  border-color: var(--primary);
+}
+
+.action-btn.delete-btn:hover {
+  color: #fda4af;
+  border-color: var(--rose);
+}
+
+/* Grid View */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.emp-card {
+  background: var(--surface-card);
+  backdrop-filter: var(--backdrop-blur);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: var(--shadow-card);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+  position: relative;
+}
+
+.emp-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-highlight);
+}
+
+.emp-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.emp-card-title h4 {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.emp-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.5);
+  padding: 12px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.detail-row span {
+  color: var(--text-muted);
+}
+
+.emp-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-color);
+}
+
+.net-salary-badge {
+  font-size: 16px;
+  font-weight: 800;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  background: var(--surface-card);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+}
+
+.empty-icon {
+  font-size: 48px;
+  color: var(--text-dim);
+  margin-bottom: 16px;
+}
+
+.empty-state h3 {
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Modals & Backdrop */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(11, 15, 25, 0.8);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--surface-modal);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 580px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-lg { max-width: 720px; }
+.modal-xl { max-width: 900px; }
+
+.modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 18px;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-main);
+}
+
+/* Modal Form Controls */
+#employeeForm {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-group.full-width {
+  grid-column: span 2;
+}
+
+.form-group label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.required {
+  color: var(--rose);
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group select {
+  padding: 10px 14px;
+  background: var(--surface-input);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 14px;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.form-hint {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* Rating Picker */
+.rating-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(15, 23, 42, 0.6);
+  padding: 14px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+}
+
+.rating-picker input[type="range"] {
+  width: 100%;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.rating-display {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+
+.rating-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Live Calculator Preview */
+.form-calculator-preview {
+  background: rgba(15, 23, 42, 0.8);
+  border: 1px solid var(--border-highlight);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.form-calculator-preview h4 {
+  font-size: 13px;
+  color: #a5b4fc;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calc-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  font-size: 13px;
+}
+
+.calc-net {
+  grid-column: span 2;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-color);
+  font-size: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+/* ES6 Inspector Content */
+.es6-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.es6-intro {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.es6-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.es6-tab {
+  padding: 8px 14px;
+  font-family: var(--font-family);
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(15, 23, 42, 0.5);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.es6-tab:hover {
+  color: var(--text-main);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.es6-tab.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.tab-pane {
+  display: none;
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.2s ease;
+}
+
+.tab-pane.active {
+  display: flex;
+}
+
+.tab-pane h4 {
+  font-size: 16px;
+  color: var(--text-main);
+}
+
+.code-block {
+  font-family: var(--font-code);
+  font-size: 13px;
+  background: #090d16;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  color: #e2e8f0;
+  overflow-x: auto;
+  line-height: 1.6;
+}
+
+/* Detail Modal Styling */
+.detail-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.detail-card-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(15, 23, 42, 0.7);
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-highlight);
+}
+
+.detail-info h2 {
+  font-size: 22px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.detail-box {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--border-color);
+  padding: 16px;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.detail-box span {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.detail-box strong {
+  font-size: 18px;
+}
+
+/* Responsive Breakpoints */
+@media (max-width: 768px) {
+  .header-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  
+  .controls-section {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-group.full-width {
+    grid-column: span 1;
+  }
+}
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i class="fa-solid fa-users-gear"></i>
+        </div>
+        <div>
+          <h1>PayPulse <span>ES6</span></h1>
+          <p class="subtitle">Employee Management & Payroll Dashboard</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="btnEs6Code" class="btn btn-secondary">
+          <i class="fa-solid fa-code"></i> ES6 Features Inspector
+        </button>
+        <button id="btnAddEmployee" class="btn btn-primary">
+          <i class="fa-solid fa-user-plus"></i> Add Employee
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-container">
+
+    <!-- KPI & Statistics Dashboard Cards (Powered by reduce()) -->
+    <section class="stats-section">
+      <div class="stats-header">
+        <h2><i class="fa-solid fa-chart-line"></i> Company Payroll Statistics</h2>
+        <span class="badge badge-accent"><i class="fa-solid fa-bolt"></i> Calculated via ES6 <code>reduce()</code></span>
+      </div>
+
+      <div class="stats-grid">
+        <!-- Stat Card 1: Total Employees -->
+        <div class="stat-card">
+          <div class="stat-icon icon-blue">
+            <i class="fa-solid fa-users"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Workforce</span>
+            <h3 id="statTotalEmployees">0</h3>
+            <span class="stat-subtext">Active records</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 2: Total Payroll Cost -->
+        <div class="stat-card">
+          <div class="stat-icon icon-emerald">
+            <i class="fa-solid fa-wallet"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Total Payroll Cost</span>
+            <h3 id="statTotalPayroll">$0</h3>
+            <span class="stat-subtext">Net salaries sum (reduce)</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 3: Average Net Salary -->
+        <div class="stat-card">
+          <div class="stat-icon icon-purple">
+            <i class="fa-solid fa-calculator"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Average Net Salary</span>
+            <h3 id="statAvgSalary">$0</h3>
+            <span class="stat-subtext">Per employee average</span>
+          </div>
+        </div>
+
+        <!-- Stat Card 4: Highest Paid Employee -->
+        <div class="stat-card">
+          <div class="stat-icon icon-amber">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <div class="stat-details">
+            <span class="stat-label">Top Earner</span>
+            <h3 id="statHighestPaidName">--</h3>
+            <span class="stat-subtext" id="statHighestPaidSalary">Highest Net Salary</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Controls Section: Search (find()), Filters (filter()), View Mode Toggle -->
+    <section class="controls-section">
+      <!-- Search Box (find()) -->
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input type="text" id="searchInput" placeholder="Search by Employee ID (e.g. EMP-101) or Name..." autocomplete="off">
+        <button id="btnQuickSearch" class="btn btn-sm btn-outline" title="Use ES6 find() to locate precise Employee ID">
+          <i class="fa-solid fa-crosshairs"></i> ID Search
+        </button>
+      </div>
+
+      <!-- Quick Filter Pills (filter()) -->
+      <div class="filter-group">
+        <span class="filter-label"><i class="fa-solid fa-filter"></i> Filters:</span>
+        <button class="filter-btn active" data-filter="all">All Employees</button>
+        <button class="filter-btn" data-filter="high-performer">
+          <i class="fa-solid fa-star"></i> High Performers (&ge; 4)
+        </button>
+        <button class="filter-btn" data-filter="high-earner">
+          <i class="fa-solid fa-dollar-sign"></i> High Base Salary (&ge; $50k)
+        </button>
+        <select id="departmentSelect" class="filter-select">
+          <option value="all">All Departments</option>
+          <option value="Engineering">Engineering</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Sales">Sales</option>
+          <option value="Design">Design</option>
+          <option value="Human Resources">Human Resources</option>
+        </select>
+      </div>
+
+      <!-- View Switcher -->
+      <div class="view-switch">
+        <button id="viewTableBtn" class="view-btn active" title="Table View"><i class="fa-solid fa-table-list"></i></button>
+        <button id="viewGridBtn" class="view-btn" title="Grid Card View"><i class="fa-solid fa-border-all"></i></button>
+      </div>
+    </section>
+
+    <!-- Active Filter Status Bar -->
+    <div id="filterStatus" class="filter-status">
+      Showing <strong id="visibleCount">0</strong> of <strong id="totalCount">0</strong> employee records.
+      <button id="btnClearFilters" class="btn-link"><i class="fa-solid fa-xmark"></i> Reset Filters</button>
+    </div>
+
+    <!-- Employee List Section (Powered by map()) -->
+    <section class="records-section">
+      <!-- Table View -->
+      <div id="tableView" class="table-container">
+        <table class="employee-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Employee Details</th>
+              <th>Department</th>
+              <th>Base Salary</th>
+              <th>Performance</th>
+              <th>Net Salary (Calculated)</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="employeeTableBody">
+            <!-- Dynamic rows generated by ES6 map() -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cards Grid View (Alternative Layout) -->
+      <div id="gridView" class="grid-container hidden">
+        <div id="employeeGrid" class="cards-grid">
+          <!-- Dynamic cards generated by ES6 map() -->
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div id="emptyState" class="empty-state hidden">
+        <div class="empty-icon"><i class="fa-solid fa-user-slash"></i></div>
+        <h3>No Employees Found</h3>
+        <p>No matching records for the selected search or filter parameters.</p>
+        <button id="btnResetSearch" class="btn btn-secondary btn-sm"><i class="fa-solid fa-rotate-left"></i> Reset Search</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Add / Edit Employee Modal Form -->
+  <div id="employeeModal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle"><i class="fa-solid fa-user-plus"></i> Add New Employee</h3>
+        <button id="btnCloseModal" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <form id="employeeForm">
+        <input type="hidden" id="editEmployeeId">
+
+        <div class="form-grid">
+          <!-- Employee ID -->
+          <div class="form-group">
+            <label for="inputEmpId">Employee ID <span class="required">*</span></label>
+            <input type="text" id="inputEmpId" placeholder="e.g. EMP-107" required>
+            <small class="form-hint">Unique Identifier</small>
+          </div>
+
+          <!-- Full Name -->
+          <div class="form-group">
+            <label for="inputName">Full Name <span class="required">*</span></label>
+            <input type="text" id="inputName" placeholder="e.g. Sarah Jenkins" required>
+          </div>
+
+          <!-- Department -->
+          <div class="form-group">
+            <label for="inputDepartment">Department <span class="required">*</span></label>
+            <select id="inputDepartment" required>
+              <option value="">Select Department...</option>
+              <option value="Engineering">Engineering</option>
+              <option value="Marketing">Marketing</option>
+              <option value="Sales">Sales</option>
+              <option value="Design">Design</option>
+              <option value="Human Resources">Human Resources</option>
+            </select>
+          </div>
+
+          <!-- Base Salary -->
+          <div class="form-group">
+            <label for="inputBaseSalary">Base Salary ($) <span class="required">*</span></label>
+            <input type="number" id="inputBaseSalary" min="10000" step="500" placeholder="e.g. 55000" required>
+          </div>
+
+          <!-- Rating -->
+          <div class="form-group full-width">
+            <label for="inputRating">Performance Rating (1 to 5) <span class="required">*</span></label>
+            <div class="rating-picker">
+              <input type="range" id="inputRating" min="1" max="5" value="3" step="1">
+              <div class="rating-display">
+                <span id="ratingValue">3 / 5</span>
+                <div id="ratingStars" class="stars-container">
+                  <i class="fa-solid fa-star text-amber"></i>
+                  <i class="fa-solid fa-star text-amber"></i>
+                  <i class="fa-solid fa-star text-amber"></i>
+                  <i class="fa-regular fa-star"></i>
+                  <i class="fa-regular fa-star"></i>
+                </div>
+              </div>
+            </div>
+            <div class="rating-labels">
+              <span>1 (Needs Imp.)</span>
+              <span>2 (Fair)</span>
+              <span>3 (Good)</span>
+              <span>4 (Exceeds)</span>
+              <span>5 (Outstanding)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Net Salary Calculator Preview -->
+        <div class="form-calculator-preview">
+          <h4><i class="fa-solid fa-calculator"></i> Real-time Net Salary Estimate (Arrow Function)</h4>
+          <div class="calc-breakdown">
+            <div><span>Base:</span> <strong id="previewBase">$0</strong></div>
+            <div><span>Bonus (<span id="previewBonusRate">0%</span>):</span> <strong id="previewBonus" class="text-emerald">+$0</strong></div>
+            <div><span>Tax (<span id="previewTaxRate">15%</span>):</span> <strong id="previewTax" class="text-rose">-$0</strong></div>
+            <div class="calc-net"><span>Est. Net Salary:</span> <strong id="previewNet" class="text-primary">$0</strong></div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btnCancelModal" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i> Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Employee Detail / Search Result Modal -->
+  <div id="detailModal" class="modal-backdrop hidden">
+    <div class="modal-content modal-lg">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-id-card"></i> Employee Record (Found via <code>find()</code>)</h3>
+        <button id="btnCloseDetailModal" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="detailModalBody" class="detail-body">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- ES6 Features Inspector Drawer / Modal -->
+  <div id="es6Modal" class="modal-backdrop hidden">
+    <div class="modal-content modal-xl">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-code"></i> Mandatory ES6 Features Implementation Inspection</h3>
+        <button id="btnCloseEs6Modal" class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="es6-body">
+        <p class="es6-intro">This dashboard explicitly implements all required ES6 standard specifications. Browse the actual code implementations below:</p>
+
+        <div class="es6-tabs">
+          <button class="es6-tab active" data-tab="tab-class">1. Class & Constructor</button>
+          <button class="es6-tab" data-tab="tab-vars">2. var, let, const</button>
+          <button class="es6-tab" data-tab="tab-arrow">3. Arrow Functions</button>
+          <button class="es6-tab" data-tab="tab-map">4. map()</button>
+          <button class="es6-tab" data-tab="tab-filter">5. filter()</button>
+          <button class="es6-tab" data-tab="tab-find">6. find()</button>
+          <button class="es6-tab" data-tab="tab-reduce">7. reduce()</button>
+        </div>
+
+        <div class="es6-tab-content">
+          <!-- Class & Constructor -->
+          <div id="tab-class" class="tab-pane active">
+            <h4>1. ES6 Class & Constructor (<code>new Employee(...)</code>)</h4>
+            <p>Creates structured employee entities with properties & salary computation methods:</p>
+            <pre><code class="code-block">class Employee {
+  constructor(id, name, department, baseSalary, rating) {
+    this.id = id;
+    this.name = name;
+    this.department = department;
+    this.baseSalary = Number(baseSalary);
+    this.rating = Number(rating);
+  }
+
+  // Bonus rate based on performance rating (1 to 5)
+  getBonusRate() {
+    const rates = { 5: 0.20, 4: 0.15, 3: 0.10, 2: 0.05, 1: 0.00 };
+    return rates[this.rating] || 0;
+  }
+}</code></pre>
+          </div>
+
+          <!-- var, let, const -->
+          <div id="tab-vars" class="tab-pane">
+            <h4>2. Variable Declarations (<code>var</code>, <code>let</code>, <code>const</code>)</h4>
+            <p>Demonstrates proper scope handling and variable immutability:</p>
+            <pre><code class="code-block">// 1. const: Immutable references, configurations & DOM elements
+const DEFAULT_TAX_RATE = 0.15;
+const HIGH_SALARY_THRESHOLD = 50000;
+
+// 2. let: Reassignable state variables (filters, search query, employee array)
+let employeeList = [];
+let currentFilter = 'all';
+let searchQuery = '';
+
+// 3. var: Demonstrating legacy global/function scope variable declaration
+var APP_VERSION = "2.0.0-ES6";
+var systemLogBuffer = []; // Global audit log</code></pre>
+          </div>
+
+          <!-- Arrow Functions -->
+          <div id="tab-arrow" class="tab-pane">
+            <h4>3. Arrow Functions (Net Salary & Tax Deductions)</h4>
+            <p>Concise functional formulas calculating bonuses, tax deductions, and final net earnings:</p>
+            <pre><code class="code-block">// Arrow function to calculate bonus amount
+const calculateBonus = (baseSalary, rating) => {
+  const bonusRates = { 5: 0.20, 4: 0.15, 3: 0.10, 2: 0.05, 1: 0.00 };
+  return baseSalary * (bonusRates[rating] || 0);
+};
+
+// Arrow function to calculate tax deduction
+const calculateTax = (grossSalary) => grossSalary * DEFAULT_TAX_RATE;
+
+// Arrow function to compute complete net salary breakdown
+const calculateNetSalary = (emp) => {
+  const bonus = calculateBonus(emp.baseSalary, emp.rating);
+  const gross = emp.baseSalary + bonus;
+  const tax = calculateTax(gross);
+  return gross - tax;
+};</code></pre>
+          </div>
+
+          <!-- map() -->
+          <div id="tab-map" class="tab-pane">
+            <h4>4. Dynamic Rendering with <code>map()</code></h4>
+            <p>Transforms raw employee object arrays into rendered HTML table rows:</p>
+            <pre><code class="code-block">// Map employee objects to HTML table row markup strings
+const renderTableBody = (employees) => {
+  const tableRows = employees.map(emp => {
+    const netSalary = calculateNetSalary(emp);
+    return `
+      &lt;tr data-id="${emp.id}"&gt;
+        &lt;td&gt;&lt;span class="emp-id-badge"&gt;${emp.id}&lt;/span&gt;&lt;/td&gt;
+        &lt;td&gt;&lt;strong&gt;${emp.name}&lt;/strong&gt;&lt;/td&gt;
+        &lt;td&gt;${emp.department}&lt;/td&gt;
+        &lt;td&gt;${formatCurrency(emp.baseSalary)}&lt;/td&gt;
+        &lt;td&gt;${renderStarRating(emp.rating)}&lt;/td&gt;
+        &lt;td class="text-emerald"&gt;${formatCurrency(netSalary)}&lt;/td&gt;
+      &lt;/tr&gt;
+    `;
+  }).join('');
+  
+  document.getElementById('employeeTableBody').innerHTML = tableRows;
+};</code></pre>
+          </div>
+
+          <!-- filter() -->
+          <div id="tab-filter" class="tab-pane">
+            <h4>5. Filtering Records with <code>filter()</code></h4>
+            <p>Filters employees by performance rating ($\ge 4$) and high base salary ($\ge \$50,000$):</p>
+            <pre><code class="code-block">// 1. Filter High Performing Employees (Rating >= 4)
+const getHighPerformers = (list) => list.filter(emp => emp.rating >= 4);
+
+// 2. Filter High Base Salary Employees (Base Salary >= $50,000)
+const getHighEarners = (list) => list.filter(emp => emp.baseSalary >= 50000);
+
+// 3. Combined Filter Engine
+const getFilteredEmployees = () => {
+  return employeeList.filter(emp => {
+    const matchesFilter = 
+      currentFilter === 'high-performer' ? emp.rating >= 4 :
+      currentFilter === 'high-earner' ? emp.baseSalary >= 50000 : true;
+    return matchesFilter;
+  });
+};</code></pre>
+          </div>
+
+          <!-- find() -->
+          <div id="tab-find" class="tab-pane">
+            <h4>6. Employee Lookup with <code>find()</code></h4>
+            <p>Searches and locates a single employee by unique Employee ID:</p>
+            <pre><code class="code-block">// Search employee by exact ID using find()
+const findEmployeeById = (idToSearch) => {
+  const result = employeeList.find(emp => 
+    emp.id.trim().toLowerCase() === idToSearch.trim().toLowerCase()
+  );
+  return result; // Returns employee object or undefined
+};</code></pre>
+          </div>
+
+          <!-- reduce() -->
+          <div id="tab-reduce" class="tab-pane">
+            <h4>7. Aggregating Statistics with <code>reduce()</code></h4>
+            <p>Calculates Total Payroll Cost, Average Net Salary, and Top Earner in a single functional pass:</p>
+            <pre><code class="code-block">const calculateCompanyStats = (employees) => {
+  if (employees.length === 0) return { totalPayroll: 0, avgSalary: 0, highestPaid: null };
+
+  // 1. Total Payroll Cost (Sum of Net Salaries) via reduce()
+  const totalPayroll = employees.reduce((accumulator, emp) => {
+    return accumulator + calculateNetSalary(emp);
+  }, 0);
+
+  // 2. Average Net Salary
+  const avgSalary = totalPayroll / employees.length;
+
+  // 3. Highest Paid Employee via reduce()
+  const highestPaid = employees.reduce((highest, current) => {
+    const highestNet = calculateNetSalary(highest);
+    const currentNet = calculateNetSalary(current);
+    return currentNet > highestNet ? current : highest;
+  }, employees[0]);
+
+  return { totalPayroll, avgSalary, highestPaid };
+};</code></pre>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Implementation -->
+  <script>
+/**
+ * ============================================================================
+ * Enterprise Employee Management & Payroll System
+ * Built with ES6 Standard Features:
+ * 1. ES6 Class & Constructor (Employee)
+ * 2. var, let, const Variable Declarations
+ * 3. Arrow Functions (Net Salary, Bonus, Tax)
+ * 4. map() for Dynamic Table/Grid Rendering
+ * 5. filter() for High Performers & High Earners
+ * 6. find() for Employee ID Search
+ * 7. reduce() for Company Statistics (Total, Avg, Highest)
+ * ============================================================================
+ */
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #2: var, let, const
+   ============================================================================ */
+
+// 1. CONST: Used for immutable constants, configurations, rates, and DOM references
+const TAX_RATE = 0.15; // 15% standard tax deduction on gross salary
+const HIGH_PERFORMER_THRESHOLD = 4; // Rating >= 4
+const HIGH_EARNER_THRESHOLD = 50000; // Base Salary >= $50,000
+
+// Currency Formatter Utility Constant
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0
+});
+
+// 2. LET: Used for reassignable state variables (active filter, search query, employee dataset)
+let employeeList = []; // Active list of Employee instances
+let currentFilter = 'all'; // Active filter tab ('all', 'high-performer', 'high-earner')
+let currentDepartment = 'all'; // Selected department filter
+let searchQuery = ''; // Search box text
+let currentView = 'table'; // Layout view mode ('table' or 'grid')
+
+// 3. VAR: Demonstrating legacy/function-scoped variable declaration
+var SYSTEM_APP_NAME = "PayPulse Enterprise Engine";
+var globalAuditCount = 0; // Global action counters
+
+/**
+ * Log action helper demonstrating `var` scope mutation
+ * @param {string} actionDescription 
+ */
+function logSystemAction(actionDescription) {
+  var timestamp = new Date().toLocaleTimeString();
+  globalAuditCount++;
+  console.log(`[${timestamp}] [Audit #${globalAuditCount}] ${actionDescription}`);
+}
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #1: ES6 Class & Constructor
+   ============================================================================ */
+
+/**
+ * Class representing an Employee
+ */
+class Employee {
+  /**
+   * Employee Constructor
+   * @param {string} id - Unique Employee ID (e.g. EMP-101)
+   * @param {string} name - Full Name
+   * @param {string} department - Department Name
+   * @param {number} baseSalary - Annual Base Salary
+   * @param {number} rating - Performance Rating (1 to 5)
+   */
+  constructor(id, name, department, baseSalary, rating) {
+    this.id = id.trim();
+    this.name = name.trim();
+    this.department = department.trim();
+    this.baseSalary = Number(baseSalary);
+    this.rating = Number(rating);
+    this.createdAt = new Date();
+  }
+
+  /**
+   * Get Performance Rating Label
+   * @returns {string} Text rating description
+   */
+  getRatingLabel() {
+    const labels = {
+      5: 'Outstanding (20% Bonus)',
+      4: 'Exceeds Expectations (15% Bonus)',
+      3: 'Meets Expectations (10% Bonus)',
+      2: 'Needs Improvement (5% Bonus)',
+      1: 'Unsatisfactory (0% Bonus)'
+    };
+    return labels[this.rating] || 'Unrated';
+  }
+
+  /**
+   * Class Instance Method to Calculate Bonus Percentage Rate
+   * @returns {number} Bonus multiplier (0.0 to 0.20)
+   */
+  getBonusRate() {
+    const bonusMap = { 5: 0.20, 4: 0.15, 3: 0.10, 2: 0.05, 1: 0.00 };
+    return bonusMap[this.rating] || 0.00;
+  }
+
+  /**
+   * Calculate Bonus Amount
+   * @returns {number} Bonus in dollars
+   */
+  calculateBonusAmount() {
+    return this.baseSalary * this.getBonusRate();
+  }
+
+  /**
+   * Calculate Gross Salary (Base + Bonus)
+   * @returns {number} Gross earnings
+   */
+  calculateGrossSalary() {
+    return this.baseSalary + this.calculateBonusAmount();
+  }
+
+  /**
+   * Calculate Tax Deduction
+   * @returns {number} Tax amount
+   */
+  calculateTaxDeduction() {
+    return this.calculateGrossSalary() * TAX_RATE;
+  }
+
+  /**
+   * Calculate Net Salary
+   * @returns {number} Net take-home pay
+   */
+  calculateNetSalary() {
+    return this.calculateGrossSalary() - this.calculateTaxDeduction();
+  }
+}
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #3: Arrow Functions
+   ============================================================================ */
+
+/**
+ * Arrow function to compute Bonus for any given base salary & performance rating
+ * @param {number} baseSalary 
+ * @param {number} rating 
+ * @returns {number} Bonus amount
+ */
+const calculateBonus = (baseSalary, rating) => {
+  const bonusRates = { 5: 0.20, 4: 0.15, 3: 0.10, 2: 0.05, 1: 0.00 };
+  return baseSalary * (bonusRates[rating] || 0);
+};
+
+/**
+ * Arrow function to calculate Tax Deductions based on gross pay
+ * @param {number} grossSalary 
+ * @returns {number} Tax deduction amount
+ */
+const calculateTaxDeduction = (grossSalary) => grossSalary * TAX_RATE;
+
+/**
+ * Arrow function to compute Net Salary (Base + Bonus - Tax)
+ * @param {Employee|Object} emp 
+ * @returns {number} Net Salary value
+ */
+const calculateNetSalary = (emp) => {
+  const base = Number(emp.baseSalary);
+  const rating = Number(emp.rating);
+  const bonus = calculateBonus(base, rating);
+  const gross = base + bonus;
+  const tax = calculateTaxDeduction(gross);
+  return gross - tax;
+};
+
+/**
+ * Arrow function helper to format currency numbers cleanly
+ * @param {number} val 
+ * @returns {string} Formatted currency string
+ */
+const formatCurrency = (val) => currencyFormatter.format(val || 0);
+
+/**
+ * Arrow function to render Star Rating HTML
+ * @param {number} rating 
+ * @returns {string} Stars markup string
+ */
+const renderStarRating = (rating) => {
+  let starsHtml = '<div class="stars-container">';
+  for (let i = 1; i <= 5; i++) {
+    if (i <= rating) {
+      starsHtml += '<i class="fa-solid fa-star text-amber"></i>';
+    } else {
+      starsHtml += '<i class="fa-regular fa-star text-dim"></i>';
+    }
+  }
+  starsHtml += '</div>';
+  return starsHtml;
+};
+
+
+/* ============================================================================
+   INITIALIZATION OF AT LEAST 5 EMPLOYEE RECORDS (ES6 Class Instantiation)
+   ============================================================================ */
+
+const seedInitialEmployees = () => {
+  employeeList = [
+    new Employee('EMP-101', 'Alex Rivera', 'Engineering', 75000, 5),
+    new Employee('EMP-102', 'Elena Rostova', 'Marketing', 48000, 4),
+    new Employee('EMP-103', 'Marcus Vance', 'Sales', 62000, 3),
+    new Employee('EMP-104', 'Priya Sharma', 'Design', 54000, 4),
+    new Employee('EMP-105', 'David Kim', 'Human Resources', 42000, 2),
+    new Employee('EMP-106', 'Sophia Chen', 'Engineering', 88000, 5)
+  ];
+  logSystemAction(`Initialized ${employeeList.length} default employee records using ES6 class constructor.`);
+};
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #7: reduce() for Statistics
+   ============================================================================ */
+
+/**
+ * Calculate company statistics using Array.prototype.reduce()
+ * @param {Array<Employee>} list 
+ * @returns {Object} Stat metrics
+ */
+const calculateCompanyStats = (list) => {
+  if (!list || list.length === 0) {
+    return {
+      totalEmployees: 0,
+      totalPayroll: 0,
+      avgSalary: 0,
+      highestPaid: null
+    };
+  }
+
+  // 1. Total Payroll Cost (Net Salary Sum) calculated via ES6 reduce()
+  const totalPayroll = list.reduce((accumulator, emp) => {
+    return accumulator + emp.calculateNetSalary();
+  }, 0);
+
+  // 2. Average Net Salary
+  const avgSalary = totalPayroll / list.length;
+
+  // 3. Highest Paid Employee object found via ES6 reduce()
+  const highestPaid = list.reduce((highest, current) => {
+    return current.calculateNetSalary() > highest.calculateNetSalary() ? current : highest;
+  }, list[0]);
+
+  return {
+    totalEmployees: list.length,
+    totalPayroll,
+    avgSalary,
+    highestPaid
+  };
+};
+
+/**
+ * Update Stats UI widgets on screen
+ */
+const updateStatsUI = () => {
+  const stats = calculateCompanyStats(employeeList);
+
+  document.getElementById('statTotalEmployees').textContent = stats.totalEmployees;
+  document.getElementById('statTotalPayroll').textContent = formatCurrency(stats.totalPayroll);
+  document.getElementById('statAvgSalary').textContent = formatCurrency(stats.avgSalary);
+
+  if (stats.highestPaid) {
+    document.getElementById('statHighestPaidName').textContent = stats.highestPaid.name;
+    document.getElementById('statHighestPaidSalary').textContent = `${formatCurrency(stats.highestPaid.calculateNetSalary())} (${stats.highestPaid.id})`;
+  } else {
+    document.getElementById('statHighestPaidName').textContent = '--';
+    document.getElementById('statHighestPaidSalary').textContent = 'No records';
+  }
+};
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #5: filter()
+   ============================================================================ */
+
+/**
+ * Get High Performing Employees (Rating >= 4) using filter()
+ * @param {Array<Employee>} list 
+ * @returns {Array<Employee>} Filtered high performers
+ */
+const filterHighPerformers = (list) => list.filter(emp => emp.rating >= HIGH_PERFORMER_THRESHOLD);
+
+/**
+ * Get High Base Salary Employees (Base Salary >= $50,000) using filter()
+ * @param {Array<Employee>} list 
+ * @returns {Array<Employee>} Filtered high earners
+ */
+const filterHighEarners = (list) => list.filter(emp => emp.baseSalary >= HIGH_EARNER_THRESHOLD);
+
+/**
+ * Master Filter Engine combining filter tabs, department selector, and search query
+ * @returns {Array<Employee>} Active visible employees
+ */
+const getFilteredEmployeeList = () => {
+  return employeeList.filter(emp => {
+    // Filter requirement check
+    let matchesTabFilter = true;
+    if (currentFilter === 'high-performer') {
+      matchesTabFilter = emp.rating >= HIGH_PERFORMER_THRESHOLD;
+    } else if (currentFilter === 'high-earner') {
+      matchesTabFilter = emp.baseSalary >= HIGH_EARNER_THRESHOLD;
+    }
+
+    // Department filter check
+    let matchesDept = true;
+    if (currentDepartment !== 'all') {
+      matchesDept = emp.department === currentDepartment;
+    }
+
+    // Search query check (ID or Name)
+    let matchesSearch = true;
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase().trim();
+      matchesSearch = emp.id.toLowerCase().includes(q) || emp.name.toLowerCase().includes(q);
+    }
+
+    return matchesTabFilter && matchesDept && matchesSearch;
+  });
+};
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #6: find()
+   ============================================================================ */
+
+/**
+ * Search employee by exact ID using Array.prototype.find()
+ * @param {string} empId - Unique Employee ID to look up
+ * @returns {Employee|undefined} Located employee or undefined
+ */
+const searchEmployeeById = (empId) => {
+  if (!empId) return undefined;
+  const cleanId = empId.trim().toLowerCase();
+  
+  // ES6 find() implementation
+  const foundEmployee = employeeList.find(emp => emp.id.toLowerCase() === cleanId);
+  return foundEmployee;
+};
+
+
+/* ============================================================================
+   DEMONSTRATION OF MANDATORY ES6 REQUIREMENT #4: map()
+   ============================================================================ */
+
+/**
+ * Render Employee Table Rows using Array.prototype.map()
+ * @param {Array<Employee>} list 
+ */
+const renderTableRows = (list) => {
+  const tableBody = document.getElementById('employeeTableBody');
+
+  if (list.length === 0) {
+    tableBody.innerHTML = '';
+    return;
+  }
+
+  // Use map() to create HTML string array and join them
+  const rowsMarkup = list.map(emp => {
+    const netPay = emp.calculateNetSalary();
+    const bonus = emp.calculateBonusAmount();
+    
+    return `
+      <tr data-id="${emp.id}">
+        <td><span class="emp-id-badge">${emp.id}</span></td>
+        <td>
+          <div class="emp-name-block">
+            <strong>${emp.name}</strong>
+            <span class="stat-subtext">${emp.getRatingLabel()}</span>
+          </div>
+        </td>
+        <td><span class="dept-pill">${emp.department}</span></td>
+        <td><strong>${formatCurrency(emp.baseSalary)}</strong></td>
+        <td>${renderStarRating(emp.rating)}</td>
+        <td>
+          <strong class="text-emerald" title="Gross: ${formatCurrency(emp.calculateGrossSalary())} | Tax: -${formatCurrency(emp.calculateTaxDeduction())}">
+            ${formatCurrency(netPay)}
+          </strong>
+        </td>
+        <td>
+          <div class="table-actions">
+            <button class="action-btn edit-btn" onclick="openEditModal('${emp.id}')" title="Edit Employee">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="action-btn delete-btn" onclick="deleteEmployee('${emp.id}')" title="Delete Employee">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+            <button class="action-btn" onclick="inspectEmployeeId('${emp.id}')" title="Find ID Details">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+
+  tableBody.innerHTML = rowsMarkup;
+};
+
+/**
+ * Render Employee Grid Cards using Array.prototype.map()
+ * @param {Array<Employee>} list 
+ */
+const renderGridCards = (list) => {
+  const gridContainer = document.getElementById('employeeGrid');
+
+  if (list.length === 0) {
+    gridContainer.innerHTML = '';
+    return;
+  }
+
+  // Use map() to create Grid Card markup
+  const cardsMarkup = list.map(emp => {
+    const netPay = emp.calculateNetSalary();
+    const bonus = emp.calculateBonusAmount();
+    const tax = emp.calculateTaxDeduction();
+
+    return `
+      <div class="emp-card" data-id="${emp.id}">
+        <div class="emp-card-header">
+          <div class="emp-card-title">
+            <span class="emp-id-badge">${emp.id}</span>
+            <h4>${emp.name}</h4>
+          </div>
+          <span class="dept-pill">${emp.department}</span>
+        </div>
+
+        <div class="emp-card-details">
+          <div class="detail-row">
+            <span>Base Salary:</span>
+            <strong>${formatCurrency(emp.baseSalary)}</strong>
+          </div>
+          <div class="detail-row">
+            <span>Bonus (${(emp.getBonusRate() * 100)}%):</span>
+            <strong class="text-emerald">+${formatCurrency(bonus)}</strong>
+          </div>
+          <div class="detail-row">
+            <span>Tax (15%):</span>
+            <strong class="text-rose">-${formatCurrency(tax)}</strong>
+          </div>
+          <div class="detail-row">
+            <span>Performance:</span>
+            ${renderStarRating(emp.rating)}
+          </div>
+        </div>
+
+        <div class="emp-card-footer">
+          <div>
+            <span class="stat-subtext">Net Salary</span>
+            <div class="net-salary-badge text-emerald">${formatCurrency(netPay)}</div>
+          </div>
+          <div class="table-actions">
+            <button class="action-btn edit-btn" onclick="openEditModal('${emp.id}')" title="Edit">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button class="action-btn delete-btn" onclick="deleteEmployee('${emp.id}')" title="Delete">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  gridContainer.innerHTML = cardsMarkup;
+};
+
+/**
+ * Refresh Main List View
+ */
+const renderApp = () => {
+  const filteredList = getFilteredEmployeeList();
+  
+  // Update counts
+  document.getElementById('visibleCount').textContent = filteredList.length;
+  document.getElementById('totalCount').textContent = employeeList.length;
+
+  const emptyState = document.getElementById('emptyState');
+  const tableView = document.getElementById('tableView');
+  const gridView = document.getElementById('gridView');
+
+  if (filteredList.length === 0) {
+    emptyState.classList.remove('hidden');
+    tableView.classList.add('hidden');
+    gridView.classList.add('hidden');
+  } else {
+    emptyState.classList.add('hidden');
+    if (currentView === 'table') {
+      tableView.classList.remove('hidden');
+      gridView.classList.add('hidden');
+      renderTableRows(filteredList);
+    } else {
+      tableView.classList.add('hidden');
+      gridView.classList.remove('hidden');
+      renderGridCards(filteredList);
+    }
+  }
+
+  // Update Stats Cards
+  updateStatsUI();
+};
+
+
+/* ============================================================================
+   EMPLOYEE MANAGEMENT ACTIONS (ADD, EDIT, DELETE)
+   ============================================================================ */
+
+/**
+ * Open Modal to Add New Employee
+ */
+const openAddModal = () => {
+  document.getElementById('modalTitle').innerHTML = '<i class="fa-solid fa-user-plus"></i> Add New Employee';
+  document.getElementById('employeeForm').reset();
+  document.getElementById('editEmployeeId').value = '';
+  document.getElementById('inputEmpId').disabled = false;
+  
+  // Default values
+  const nextIdNum = 101 + employeeList.length;
+  document.getElementById('inputEmpId').value = `EMP-${nextIdNum}`;
+  document.getElementById('inputRating').value = 3;
+  updateRatingDisplay(3);
+  updateFormCalculatorPreview();
+
+  document.getElementById('employeeModal').classList.remove('hidden');
+};
+
+/**
+ * Open Modal to Edit Existing Employee
+ * @param {string} empId 
+ */
+window.openEditModal = (empId) => {
+  // Use find() to locate employee record to edit
+  const emp = searchEmployeeById(empId);
+  if (!emp) return;
+
+  document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-pen-to-square"></i> Edit Employee (${emp.id})`;
+  document.getElementById('editEmployeeId').value = emp.id;
+  document.getElementById('inputEmpId').value = emp.id;
+  document.getElementById('inputEmpId').disabled = true; // Cannot edit ID
+  document.getElementById('inputName').value = emp.name;
+  document.getElementById('inputDepartment').value = emp.department;
+  document.getElementById('inputBaseSalary').value = emp.baseSalary;
+  document.getElementById('inputRating').value = emp.rating;
+
+  updateRatingDisplay(emp.rating);
+  updateFormCalculatorPreview();
+
+  document.getElementById('employeeModal').classList.remove('hidden');
+};
+
+/**
+ * Close Add/Edit Modal
+ */
+const closeModal = () => {
+  document.getElementById('employeeModal').classList.add('hidden');
+};
+
+/**
+ * Delete Employee Record
+ * @param {string} empId 
+ */
+window.deleteEmployee = (empId) => {
+  const emp = searchEmployeeById(empId);
+  if (!emp) return;
+
+  if (confirm(`Are you sure you want to delete employee record for ${emp.name} (${emp.id})?`)) {
+    // Remove from array using filter()
+    employeeList = employeeList.filter(e => e.id !== empId);
+    logSystemAction(`Deleted employee record: ${emp.name} (${empId})`);
+    renderApp();
+  }
+};
+
+/**
+ * Inspect Employee by ID using find() and show detail modal
+ * @param {string} empId 
+ */
+window.inspectEmployeeId = (empId) => {
+  // Use ES6 find()
+  const emp = searchEmployeeById(empId);
+  
+  const detailModalBody = document.getElementById('detailModalBody');
+  if (!emp) {
+    detailModalBody.innerHTML = `
+      <div class="empty-state">
+        <i class="fa-solid fa-triangle-exclamation text-rose" style="font-size: 3rem;"></i>
+        <h3>Employee Not Found</h3>
+        <p>No record matches Employee ID: <strong>"${empId}"</strong> via ES6 <code>find()</code>.</p>
+      </div>
+    `;
+  } else {
+    const net = emp.calculateNetSalary();
+    const bonus = emp.calculateBonusAmount();
+    const tax = emp.calculateTaxDeduction();
+    const gross = emp.calculateGrossSalary();
+
+    detailModalBody.innerHTML = `
+      <div class="detail-card-hero">
+        <div class="detail-info">
+          <h2>${emp.name}</h2>
+          <span class="emp-id-badge">${emp.id}</span> &bull; <span class="dept-pill">${emp.department}</span>
+        </div>
+        <div class="text-right">
+          <span class="stat-subtext">Net Salary Take-Home</span>
+          <h2 class="text-emerald">${formatCurrency(net)}</h2>
+        </div>
+      </div>
+
+      <div class="detail-grid">
+        <div class="detail-box">
+          <span>Base Salary</span>
+          <strong>${formatCurrency(emp.baseSalary)}</strong>
+        </div>
+        <div class="detail-box">
+          <span>Performance Rating</span>
+          <div>${renderStarRating(emp.rating)} <small>(${emp.getRatingLabel()})</small></div>
+        </div>
+        <div class="detail-box">
+          <span>Performance Bonus</span>
+          <strong class="text-emerald">+${formatCurrency(bonus)} (${(emp.getBonusRate() * 100)}%)</strong>
+        </div>
+        <div class="detail-box">
+          <span>Tax Deduction</span>
+          <strong class="text-rose">-${formatCurrency(tax)} (15%)</strong>
+        </div>
+        <div class="detail-box">
+          <span>Gross Earnings</span>
+          <strong>${formatCurrency(gross)}</strong>
+        </div>
+        <div class="detail-box">
+          <span>ES6 Lookup Status</span>
+          <strong class="text-primary"><i class="fa-solid fa-check-circle"></i> Found via find()</strong>
+        </div>
+      </div>
+    `;
+  }
+
+  document.getElementById('detailModal').classList.remove('hidden');
+};
+
+
+/* ============================================================================
+   REAL-TIME CALCULATOR PREVIEW IN MODAL
+   ============================================================================ */
+
+const updateRatingDisplay = (val) => {
+  document.getElementById('ratingValue').textContent = `${val} / 5`;
+  document.getElementById('ratingStars').innerHTML = renderStarRating(val);
+};
+
+const updateFormCalculatorPreview = () => {
+  const baseSalary = Number(document.getElementById('inputBaseSalary').value) || 0;
+  const rating = Number(document.getElementById('inputRating').value) || 1;
+
+  const tempEmp = { baseSalary, rating };
+  const bonus = calculateBonus(baseSalary, rating);
+  const gross = baseSalary + bonus;
+  const tax = calculateTaxDeduction(gross);
+  const net = calculateNetSalary(tempEmp);
+
+  const bonusRates = { 5: '20%', 4: '15%', 3: '10%', 2: '5%', 1: '0%' };
+
+  document.getElementById('previewBase').textContent = formatCurrency(baseSalary);
+  document.getElementById('previewBonusRate').textContent = bonusRates[rating] || '0%';
+  document.getElementById('previewBonus').textContent = `+${formatCurrency(bonus)}`;
+  document.getElementById('previewTax').textContent = `-${formatCurrency(tax)}`;
+  document.getElementById('previewNet').textContent = formatCurrency(net);
+};
+
+
+/* ============================================================================
+   EVENT LISTENERS & BINDINGS
+   ============================================================================ */
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Seed initial data
+  seedInitialEmployees();
+
+  // Initial render
+  renderApp();
+
+  // Add Employee Button
+  document.getElementById('btnAddEmployee').addEventListener('click', openAddModal);
+
+  // Close Modals
+  document.getElementById('btnCloseModal').addEventListener('click', closeModal);
+  document.getElementById('btnCancelModal').addEventListener('click', closeModal);
+  
+  document.getElementById('btnCloseDetailModal').addEventListener('click', () => {
+    document.getElementById('detailModal').classList.add('hidden');
+  });
+
+  // ES6 Code Inspector Modal
+  const es6Modal = document.getElementById('es6Modal');
+  document.getElementById('btnEs6Code').addEventListener('click', () => {
+    es6Modal.classList.remove('hidden');
+  });
+  document.getElementById('btnCloseEs6Modal').addEventListener('click', () => {
+    es6Modal.classList.add('hidden');
+  });
+
+  // ES6 Code Inspector Tabs
+  const tabs = document.querySelectorAll('.es6-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+
+      e.target.classList.add('active');
+      const targetPane = document.getElementById(e.target.dataset.tab);
+      if (targetPane) targetPane.classList.add('active');
+    });
+  });
+
+  // Rating slider input event
+  const ratingInput = document.getElementById('inputRating');
+  ratingInput.addEventListener('input', (e) => {
+    const val = Number(e.target.value);
+    updateRatingDisplay(val);
+    updateFormCalculatorPreview();
+  });
+
+  // Base salary input event for real-time preview
+  document.getElementById('inputBaseSalary').addEventListener('input', updateFormCalculatorPreview);
+
+  // Form Submit Handler
+  document.getElementById('employeeForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const editId = document.getElementById('editEmployeeId').value;
+    const empId = document.getElementById('inputEmpId').value.trim();
+    const name = document.getElementById('inputName').value.trim();
+    const dept = document.getElementById('inputDepartment').value;
+    const baseSalary = Number(document.getElementById('inputBaseSalary').value);
+    const rating = Number(document.getElementById('inputRating').value);
+
+    if (editId) {
+      // EDIT MODE: Find and update existing instance
+      const existingEmp = searchEmployeeById(editId);
+      if (existingEmp) {
+        existingEmp.name = name;
+        existingEmp.department = dept;
+        existingEmp.baseSalary = baseSalary;
+        existingEmp.rating = rating;
+        logSystemAction(`Updated employee details for ${name} (${editId})`);
+      }
+    } else {
+      // ADD MODE: Check for duplicate ID using find()
+      const duplicate = searchEmployeeById(empId);
+      if (duplicate) {
+        alert(`Error: Employee ID "${empId}" already exists! Please use a unique ID.`);
+        return;
+      }
+
+      // Instantiate new Employee class object using `new`
+      const newEmp = new Employee(empId, name, dept, baseSalary, rating);
+      employeeList.push(newEmp);
+      logSystemAction(`Added new employee: ${name} (${empId}) using new Employee(...)`);
+    }
+
+    closeModal();
+    renderApp();
+  });
+
+  // Quick Filter Buttons (All, High Performers, High Earners)
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      const targetBtn = e.target.closest('.filter-btn');
+      targetBtn.classList.add('active');
+      currentFilter = targetBtn.dataset.filter;
+      renderApp();
+    });
+  });
+
+  // Department Dropdown Filter
+  document.getElementById('departmentSelect').addEventListener('change', (e) => {
+    currentDepartment = e.target.value;
+    renderApp();
+  });
+
+  // Search Input Event
+  const searchInput = document.getElementById('searchInput');
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value;
+    renderApp();
+  });
+
+  // Quick ID Search Button (Uses find())
+  document.getElementById('btnQuickSearch').addEventListener('click', () => {
+    const q = searchInput.value.trim();
+    if (!q) {
+      alert('Please enter an Employee ID in the search box (e.g. EMP-101)');
+      return;
+    }
+
+    const found = searchEmployeeById(q);
+    if (found) {
+      inspectEmployeeId(found.id);
+    } else {
+      alert(`No employee record found with ID "${q}" using ES6 find().`);
+    }
+  });
+
+  // Clear Filters Button
+  const resetFiltersAction = () => {
+    currentFilter = 'all';
+    currentDepartment = 'all';
+    searchQuery = '';
+    searchInput.value = '';
+    document.getElementById('departmentSelect').value = 'all';
+
+    filterBtns.forEach(b => b.classList.remove('active'));
+    document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
+    
+    renderApp();
+  };
+
+  document.getElementById('btnClearFilters').addEventListener('click', resetFiltersAction);
+  document.getElementById('btnResetSearch').addEventListener('click', resetFiltersAction);
+
+  // View Switcher (Table vs Grid)
+  const viewTableBtn = document.getElementById('viewTableBtn');
+  const viewGridBtn = document.getElementById('viewGridBtn');
+
+  viewTableBtn.addEventListener('click', () => {
+    currentView = 'table';
+    viewTableBtn.classList.add('active');
+    viewGridBtn.classList.remove('active');
+    renderApp();
+  });
+
+  viewGridBtn.addEventListener('click', () => {
+    currentView = 'grid';
+    viewGridBtn.classList.add('active');
+    viewTableBtn.classList.remove('active');
+    renderApp();
+  });
+});
+  </script>
+</body>
+</html>
